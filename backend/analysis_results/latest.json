@@ -1,0 +1,26 @@
+{
+  "id": "237bcffc-6689-4fdc-905d-9ff94a31ba14",
+  "timestamp": "2026-01-24T14:59:23.101975",
+  "video_path": "/Users/smaranrangarajan/Desktop/Badminton Pretrained Model/backend/outputs/237bcffc-6689-4fdc-905d-9ff94a31ba14.mp4",
+  "metrics": {
+    "frames_processed": 100,
+    "detections": 100,
+    "consistency_percent": 100.0,
+    "avg_shuttle_speed_km_h": 16.36,
+    "max_shuttle_speed_km_h": 86.43,
+    "avg_rally_length_frames": 100.0,
+    "avg_rally_length_seconds": 3.33,
+    "total_rallies": 1,
+    "total_distance_meters": 15.0,
+    "movement_smoothness": 0.005,
+    "min_speed_km_h": 0.0,
+    "speed_variance": 191.68
+  },
+  "insights": {
+    "consistency_level": "excellent",
+    "shuttle_control": "excellent",
+    "power_analysis": "low_power",
+    "speed_consistency": "consistent",
+    "overall_rating": "intermediate"
+  }
+}

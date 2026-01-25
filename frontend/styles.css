@@ -1,0 +1,88 @@
+/* Custom styles for Badminton AI */
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Navigation item active state */
+.nav-item.active {
+  background-color: rgb(243 244 246);
+}
+
+.dark .nav-item.active {
+  background-color: rgb(55 65 81);
+}
+
+/* Settings tab active state */
+.settings-tab.active {
+  color: rgb(37 99 235);
+  border-bottom-width: 2px;
+  border-color: rgb(37 99 235);
+}
+
+/* Custom scrollbar for chat */
+#chatMessages::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chatMessages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chatMessages::-webkit-scrollbar-thumb {
+  background: rgb(156 163 175);
+  border-radius: 4px;
+}
+
+.dark #chatMessages::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+}
+
+/* Hover effects for cards */
+.transform.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* Drop zone hover effect */
+#dropZone:hover {
+  border-color: rgb(59 130 246);
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Progress bar animation */
+.progress-bar-transition {
+  transition: width 0.3s ease-out;
+}
