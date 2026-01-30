@@ -1,0 +1,26 @@
+{
+  "id": "7d23472b-ed41-4d14-87a2-5b10524bea26",
+  "timestamp": "2026-01-27T18:45:40.131442",
+  "video_path": "/Users/smaranrangarajan/Documents/GitHub/BadmintonAPP/backend/outputs/7d23472b-ed41-4d14-87a2-5b10524bea26.mp4",
+  "metrics": {
+    "frames_processed": 300,
+    "detections": 300,
+    "consistency_percent": 100.0,
+    "avg_shuttle_speed_km_h": 46.74,
+    "max_shuttle_speed_km_h": 940.6,
+    "avg_rally_length_frames": 300.0,
+    "avg_rally_length_seconds": 10.0,
+    "total_rallies": 1,
+    "total_distance_meters": 129.39,
+    "movement_smoothness": 0.0,
+    "min_speed_km_h": 0.0,
+    "speed_variance": 10826.63
+  },
+  "insights": {
+    "consistency_level": "excellent",
+    "shuttle_control": "excellent",
+    "power_analysis": "high_power",
+    "speed_consistency": "variable",
+    "overall_rating": "intermediate"
+  }
+}

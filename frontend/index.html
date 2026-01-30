@@ -7,6 +7,35 @@
   <title>Badminton AI - Professional Match Analysis</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script>
+    console.log('🔍 RELOAD DETECTOR ACTIVE');
+    
+    // Catch beforeunload
+    window.addEventListener('beforeunload', function(e) {
+      console.error('🚨 BEFOREUNLOAD TRIGGERED!');
+      console.trace();
+      debugger; // This will pause execution
+    });
+    
+    // Catch location.reload()
+    const originalReload = window.location.reload;
+    window.location.reload = function() {
+      console.error('🚨 window.location.reload() CALLED!');
+      console.trace();
+      debugger;
+      return originalReload.apply(this, arguments);
+    };
+    
+    // Catch form submissions
+    document.addEventListener('submit', function(e) {
+      console.error('🚨 FORM SUBMITTED!');
+      console.trace();
+      debugger;
+      e.preventDefault();
+    }, true);
+    
+    console.log('✅ Reload traps set');
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',

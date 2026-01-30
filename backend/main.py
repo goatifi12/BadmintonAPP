@@ -28,8 +28,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ============================================================
 from badminton_model.tracker.shuttle_tracker import ShuttleTracker
 from badminton_model.utils import read_video, save_video
-from analysis.footwork import analyze_footwork
-
+from analysis.footwork import analyze_footwork  # Now includes stroke classification!
 
 # ============================================================
 # MODEL PATH
@@ -107,49 +106,10 @@ async def analyze_video(file: UploadFile = File(...)):
     global analysis_running
 
     if analysis_running:
-        return JSONResponse({ 
-        "message": "Analysis already in progress. Please wait.",
-            "video_url": "/outputs/analyzed_video.mp4",
-            "metrics": {
-                "frames_processed": 300,
-                "detections": 285,
-                "consistency_percent": 95,
-                "total_rallies": 5,
-                
-                # STROKE COUNTS
-                "stroke_counts": {
-                    "smash": 45,
-                    "clear": 38,
-                    "drop": 22,
-                    "net": 15
-                },
-                
-                # STROKE QUALITY METRICS
-                "stroke_quality": {
-                    "smash": {
-                        "avg_speed": 245.5,
-                        "max_speed": 310.2,
-                        "avg_angle": 35.2
-                    },
-                    "drop": {
-                        "net_clearance": 15.3,
-                        "accuracy": 72
-                    },
-                    "clear": {
-                        "avg_apex": 6.8,
-                        "depth_percentage": 85
-                    }
-                },
-                
-                # EXISTING METRICS
-                "avg_shuttle_speed_km_h": 58.57,
-                "max_shuttle_speed_km_h": 310.77,
-                "speed_variance": 10803.02,
-                "avg_rally_length_seconds": 10.0,
-                "total_distance_meters": 162.14,
-                "movement_smoothness": 0.85
-            }
-        })
+        return JSONResponse({
+            "message": "Analysis already in progress. Please wait.",
+            "error": "concurrent_analysis"
+        }, status_code=409)
 
     analysis_running = True
 
@@ -163,18 +123,20 @@ async def analyze_video(file: UploadFile = File(...)):
 
         # Read + analyze video
         frames = read_video(temp_input)
-        frames = frames[:300]
+        frames = frames[:300]  # Limit to 300 frames for faster processing
 
         if not frames:
             raise RuntimeError("❌ No frames read from video")
 
         print(f"🎞 Frames read: {len(frames)}")
 
+        # SHUTTLE DETECTION
         detections = shuttle_tracker.detect_shuttle(frames)
         detections = shuttle_tracker.interpolate_shuttle_position(detections)
 
         print("📊 Detections per frame:", [len(d) for d in detections])
 
+        # DRAW BOUNDING BOXES
         output_frames = shuttle_tracker.draw_shuttle_bbox(frames, detections)
 
         # Save output video
@@ -187,9 +149,13 @@ async def analyze_video(file: UploadFile = File(...)):
 
         print("🎥 Output video saved to:", output_path)
 
-        # Compute metrics
+        # ============================================================
+        # COMPUTE METRICS (NOW INCLUDES STROKE CLASSIFICATION!)
+        # ============================================================
         if detections and any(len(d) > 0 for d in detections):
-            metrics = analyze_footwork(detections)
+            metrics = analyze_footwork(detections, fps=30)
+            print("✅ Metrics computed with stroke classification!")
+            print(f"   Strokes detected: {metrics.get('stroke_counts', {})}")
         else:
             print("⚠️ No shuttle detected in entire video")
             metrics = {
@@ -198,16 +164,30 @@ async def analyze_video(file: UploadFile = File(...)):
                 "consistency_percent": 0,
                 "avg_shuttle_speed_km_h": 0,
                 "max_shuttle_speed_km_h": 0,
+                "min_speed_km_h": 0,
+                "speed_variance": 0,
                 "avg_rally_length_frames": 0,
                 "avg_rally_length_seconds": 0,
                 "total_rallies": 0,
                 "total_distance_meters": 0,
                 "movement_smoothness": 0,
-                "min_speed_km_h": 0,
-                "speed_variance": 0
+                # Empty stroke data
+                "stroke_counts": {
+                    "smash": 0,
+                    "clear": 0,
+                    "drop": 0,
+                    "net": 0,
+                    "drive": 0,
+                    "unknown": 0
+                },
+                "stroke_quality": {
+                    "smash": {"count": 0, "avg_speed": 0, "max_speed": 0, "avg_angle": 0},
+                    "drop": {"count": 0, "net_clearance": 0, "accuracy": 0},
+                    "clear": {"count": 0, "avg_apex": 0, "depth_percentage": 0}
+                }
             }
 
-        # NEW: Store results for chat
+        # Store results for chat
         analysis_id = output_filename.split('.')[0]
         AnalysisStorage.save_result(
             analysis_id=analysis_id,
@@ -225,12 +205,13 @@ async def analyze_video(file: UploadFile = File(...)):
         # Build response
         response_data = {
             "message": "Analysis complete",
-            "analysis_id": analysis_id,  # NEW
+            "analysis_id": analysis_id,
             "video_url": f"/outputs/{output_filename}",
             "metrics": metrics
         }
         
-        print("✅ Sending response:", response_data)
+        print("✅ Sending response with stroke data:")
+        print(f"   Total strokes: {sum(metrics.get('stroke_counts', {}).values())}")
         
         return JSONResponse(response_data)
 
@@ -247,7 +228,9 @@ async def analyze_video(file: UploadFile = File(...)):
                 "detections": 0,
                 "consistency_percent": 0,
                 "avg_shuttle_speed_km_h": 0,
-                "max_shuttle_speed_km_h": 0
+                "max_shuttle_speed_km_h": 0,
+                "stroke_counts": {},
+                "stroke_quality": {}
             },
             "error": str(e)
         }

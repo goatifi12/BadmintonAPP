@@ -5,7 +5,27 @@ if (window.analysisComponentLoaded) {
   window.analysisComponentLoaded = true;
   console.log('✅ analysis.js loading...');
 
- 
+  let reloadBlocked = false;
+  window.addEventListener('beforeunload', function(e) {
+    if (reloadBlocked) {
+      console.error('🛑 RELOAD BLOCKED - something is trying to reload the page!');
+      console.trace(); // Show what's causing it
+      e.preventDefault();
+      e.returnValue = 'RELOAD BLOCKED FOR DEBUGGING';
+      return e.returnValue;
+    }
+  });
+
+  // Block reloads when analysis starts
+  window.blockReloads = function() {
+    reloadBlocked = true;
+    console.log('🛑 Reloads are now BLOCKED');
+  };
+
+  window.unblockReloads = function() {
+    reloadBlocked = false;
+    console.log('✅ Reloads are now UNBLOCKED');
+  };
 
 
   // Analysis Component HTML Generator
@@ -505,11 +525,15 @@ if (window.analysisComponentLoaded) {
   };
 
   window.updateMetrics = function(metrics) {
+    console.log('📊 RAW METRICS FROM BACKEND:', JSON.stringify(metrics, null, 2));
     // Basic KPIs
     document.getElementById('framesProcessed').textContent = metrics.frames_processed || 0;
     document.getElementById('detections').textContent = metrics.detections || 0;
     document.getElementById('consistency').textContent = metrics.consistency_percent ? `${metrics.consistency_percent}%` : '0%';
     document.getElementById('totalRallies').textContent = metrics.total_rallies || 0;
+
+  console.log('🔍 Looking for stroke_counts:', metrics.stroke_counts);
+   console.log('🔍 Looking for stroke_quality:', metrics.stroke_quality);
 
     // Stroke counts
     const strokes = metrics.stroke_counts || {};
