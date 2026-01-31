@@ -1,4 +1,4 @@
-# 🏸 Badminton AI – Professional Match Analysis
+# 🏸 Badminton AI – Professional Match Analysis 
 
 Badminton AI is a full-stack computer vision and analytics platform that turns raw badminton match videos into **actionable performance insights**. The system analyzes uploaded videos to detect players and the shuttlecock, segment rallies, classify strokes, and generate professional-level statistics — all presented in a modern, interactive dashboard with an AI coaching assistant.
 
@@ -155,4 +155,9 @@ This project was built to demonstrate:
 * Full-stack engineering (frontend + backend + ML)
 * Thoughtful product design for athlete feedback
 * Ability to scale from prototype to production-grade system
+
+## Author
+**Smaran Rangarajan**
+Github: https://github.com/goatifi12
+Email: hifromsmaran@gmail.com
 
