@@ -18,9 +18,7 @@ This project is designed to simulate a **real-world sports analytics product**, 
 
 * **Player detection & tracking**
 * **Shuttlecock detection**
-* **Rally segmentation**
 * **Stroke classification** (Smash, Clear, Drop, Net)
-* Frame-level and rally-level aggregation
 
 ### 📊 Performance Metrics
 
