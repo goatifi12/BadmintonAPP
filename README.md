@@ -10,7 +10,7 @@ This project is designed to simulate a **real-world sports analytics product**, 
 
 ### 🎥 Video-Based Match Analysis
 
-* Upload match or practice footage (single-camera)
+* Upload match or practice footage (single-camera, Birds eye view)
 * Automatic frame-by-frame analysis
 * Processes videos asynchronously via a FastAPI backend
 
