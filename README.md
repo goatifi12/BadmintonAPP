@@ -158,6 +158,7 @@ This project was built to demonstrate:
 
 ## Author
 **Smaran Rangarajan**
-*Github: https://github.com/goatifi12
-*Email: hifromsmaran@gmail.com
+
+* Github: https://github.com/goatifi12
+* Email: hifromsmaran@gmail.com
 
