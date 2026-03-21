@@ -3,30 +3,28 @@ import cv2
 def read_video(video_path):
     cap = cv2.VideoCapture(video_path)
     frames = []
-    FRAME_SKIP = 3        # analyze every 3rd frame
-    MAX_FRAMES = 900      # hard limit (30 sec @ 30fps)
 
+    FRAME_SKIP = 1      # set to 1 if you want EVERY frame analyzed
     frame_count = 0
 
-    while cap.isOpened():
+    while True:
         ret, frame = cap.read()
         if not ret:
             break
 
         frame_count += 1
-        if frame_count > MAX_FRAMES:
-            break
 
+        # skip frames if desired
         if frame_count % FRAME_SKIP != 0:
             continue
 
         # resize BEFORE detection
         frame = cv2.resize(frame, (640, 360))
-
         frames.append(frame)
 
-    cap.release()  # ✅ FIXED: Moved outside the loop
-    return frames  # ✅ FIXED: Moved outside the loop
+    cap.release()
+    return frames
+
 
 
 def save_video(frames, ori_video_path, output_video_path):

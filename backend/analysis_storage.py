@@ -7,13 +7,16 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 
 class AnalysisStorage:
     @staticmethod
-    def save_result(analysis_id: str, metrics: dict, video_path: str):
+    def save_result(analysis_id: str, metrics: dict, video_path: str,
+                    tactical: dict = None, replay_path: str = None):
         """Save analysis results for chat consumption"""
         result = {
             "id": analysis_id,
             "timestamp": datetime.now().isoformat(),
             "video_path": video_path,
             "metrics": metrics,
+            "tactical": tactical or {},        # NEW: heatmaps, weaknesses, coaching tips
+            "replay_path": replay_path,        # NEW: path to per-frame replay JSON
             "insights": AnalysisStorage._generate_insights(metrics)
         }
         
@@ -28,6 +31,15 @@ class AnalysisStorage:
         
         return filepath
     
+    @staticmethod
+    def get_by_id(analysis_id: str):
+        """Fetch a specific analysis result by ID"""
+        filepath = os.path.join(RESULTS_DIR, f"{analysis_id}.json")
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                return json.load(f)
+        return None
+
     @staticmethod
     def _generate_insights(metrics: dict) -> dict:
         """Generate coaching insights from raw metrics"""

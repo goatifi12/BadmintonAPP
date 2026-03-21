@@ -1,5 +1,5 @@
 import math
-from typing import List, Dict
+from typing import List, Dict, Tuple, Optional
 
 def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
     """
@@ -23,7 +23,7 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
             x1, y1, x2, y2 = frame_det[0]
             cx = (x1 + x2) / 2
             cy = (y1 + y2) / 2
-            positions.append((cx, cy))
+            positions.append((cx, cy))  # ✅ TUPLE not list
         else:
             positions.append(None)
 
@@ -50,6 +50,11 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
             meters_per_second = meters_per_frame * fps
             km_h = meters_per_second * 3.6
             speeds_km_h.append(km_h)
+        else:
+            speeds_km_h.append(0)  # Add 0 for missing detections
+
+    # Add 0 for first frame (no previous frame to compare)
+    speeds_km_h.insert(0, 0)
 
     # ============================================================
     # 2️⃣ RALLY LENGTH (continuous detection segments)
@@ -80,9 +85,11 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
     # ============================================================
     # 4️⃣ MOVEMENT SMOOTHNESS (inverse of speed variance)
     # ============================================================
-    if len(speeds_km_h) > 1:
-        mean_speed = sum(speeds_km_h) / len(speeds_km_h)
-        variance = sum((s - mean_speed) ** 2 for s in speeds_km_h) / len(speeds_km_h)
+    valid_speeds = [s for s in speeds_km_h if s > 0]
+    
+    if len(valid_speeds) > 1:
+        mean_speed = sum(valid_speeds) / len(valid_speeds)
+        variance = sum((s - mean_speed) ** 2 for s in valid_speeds) / len(valid_speeds)
         # Normalize smoothness to 0-1 range (higher = smoother)
         smoothness = 1 / (1 + math.sqrt(variance) / 100)
     else:
@@ -103,12 +110,32 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
     # Initialize classifier with correct parameters
     classifier = StrokeClassifier(fps=fps, pixels_to_meters=PIXELS_TO_METERS)
     
-    # Analyze strokes
-    stroke_analysis = classifier.analyze_strokes(detections)
-    
-    print(f"🏸 Stroke analysis complete:")
-    print(f"   Total strokes detected: {stroke_analysis.get('total_strokes', 0)}")
-    print(f"   Stroke breakdown: {stroke_analysis.get('stroke_counts', {})}")
+    try:
+        # Analyze strokes - NOW PASSING POSITIONS (tuples) AND SPEEDS
+        stroke_analysis = classifier.analyze_strokes(positions, speeds_km_h, fps=fps)
+        
+        print(f"🏸 Stroke analysis complete:")
+        print(f"   Stroke breakdown: {stroke_analysis.get('stroke_counts', {})}")
+        
+    except Exception as e:
+        print(f"⚠️ Stroke classification error: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Provide empty stroke data on error
+        stroke_analysis = {
+            'stroke_counts': {
+                'smash': 0, 'clear': 0, 'drop': 0, 
+                'net': 0, 'drive': 0, 'lift': 0, 'unknown': 0
+            },
+            'stroke_quality': {
+                'smash': {'count': 0, 'avg_speed': 0, 'max_speed': 0, 'avg_angle': 0},
+                'drop': {'count': 0, 'net_clearance': 0, 'accuracy': 0},
+                'clear': {'count': 0, 'avg_apex': 0, 'depth_percentage': 0},
+                'drive': {'count': 0, 'avg_speed': 0, 'max_speed': 0},
+                'lift': {'count': 0, 'avg_angle': 0, 'consistency': 0}
+            }
+        }
 
     # ============================================================
     # RETURN COMPLETE METRICS
@@ -120,9 +147,9 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
         "consistency_percent": consistency_percent,
         
         # Speed metrics (km/h)
-        "avg_shuttle_speed_km_h": round(sum(speeds_km_h) / len(speeds_km_h), 2) if speeds_km_h else 0,
-        "max_shuttle_speed_km_h": round(max(speeds_km_h), 2) if speeds_km_h else 0,
-        "min_speed_km_h": round(min(speeds_km_h), 2) if speeds_km_h else 0,
+        "avg_shuttle_speed_km_h": round(sum(valid_speeds) / len(valid_speeds), 2) if valid_speeds else 0,
+        "max_shuttle_speed_km_h": round(max(valid_speeds), 2) if valid_speeds else 0,
+        "min_speed_km_h": round(min(valid_speeds), 2) if valid_speeds else 0,
         "speed_variance": round(variance, 2),
         
         # Rally metrics
@@ -136,11 +163,13 @@ def analyze_footwork(detections: List[Dict], fps: int = 30) -> Dict:
         
         # STROKE CLASSIFICATION RESULTS (from your advanced classifier!)
         "stroke_counts": stroke_analysis.get('stroke_counts', {
-            "smash": 0, "clear": 0, "drop": 0, "net": 0
+            "smash": 0, "clear": 0, "drop": 0, "net": 0, "drive": 0, "lift": 0, "unknown": 0
         }),
         "stroke_quality": stroke_analysis.get('stroke_quality', {
             "smash": {"avg_speed": 0, "max_speed": 0, "avg_angle": 0},
             "drop": {"net_clearance": 0, "accuracy": 0},
-            "clear": {"avg_apex": 0, "depth_percentage": 0}
+            "clear": {"avg_apex": 0, "depth_percentage": 0},
+            "drive": {"avg_speed": 0, "max_speed": 0},
+            "lift": {"avg_angle": 0, "consistency": 0}
         })
     }

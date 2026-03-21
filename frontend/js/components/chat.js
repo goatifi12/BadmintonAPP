@@ -3,362 +3,346 @@ if (window.chatComponentLoaded) {
 } else {
   window.chatComponentLoaded = true;
 
-// ... rest of your chat.js code here
+  const API = 'http://127.0.0.1:8000';
+  let currentAnalysisData = null;
+  let conversationHistory  = [];
 
-// Chat Component HTML Generator
-
+  // ─────────────────────────────────────────────────────────────────
+  // HTML
+  // ─────────────────────────────────────────────────────────────────
   function getChatHTML() {
     return `
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold mb-2">AI Coach Assistant</h1>
-        <p class="text-gray-600 dark:text-gray-400">Get personalized insights based on your match analysis</p>
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-black text-gray-900 dark:text-white">AI Coach Assistant</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Powered by Claude · Personalised to your match data</p>
+        </div>
+        <button onclick="reloadAnalysisData()"
+          class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50
+                 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-bold transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Sync Analysis
+        </button>
       </div>
 
-      <!-- Analysis Status Banner -->
-      <div class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div id="analysisStatusIcon" class="hidden">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div id="noAnalysisIcon">
-              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="flex-1 ml-3">
-            <p id="analysisIndicator" class="hidden text-sm font-semibold text-green-700 dark:text-green-400">
-              ✓ Match Analysis Loaded - Ask me anything!
-            </p>
-            <p id="noAnalysisIndicator" class="text-sm text-gray-600 dark:text-gray-400">
-              No analysis data yet. Upload a video in the Analysis tab to get personalized coaching.
-            </p>
-          </div>
-        </div>
-      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-5" style="height:calc(100vh - 14rem); min-height:520px;">
 
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg flex flex-col h-[calc(100vh-20rem)]">
-        <!-- Chat Messages Area -->
-        <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
-          <!-- Initial AI Message -->
-          <div class="flex items-start space-x-3">
-            <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-              </svg>
-            </div>
-            <div class="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg p-4 shadow">
-              <p class="text-gray-800 dark:text-gray-200">Hello! I'm your AI Badminton Coach. I analyze your match data and provide personalized insights. Upload a match video in the Analysis tab, then ask me questions like:</p>
-              <ul class="mt-2 ml-4 text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                <li>• "What should I improve based on my performance?"</li>
-                <li>• "Why is my shuttle control inconsistent?"</li>
-                <li>• "How does my speed compare to professional players?"</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <!-- LEFT CONTEXT PANEL -->
+        <div class="xl:col-span-1 flex flex-col gap-4 overflow-y-auto">
 
-        <!-- Chat Input Area -->
-        <div class="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900">
-          <form onsubmit="sendChatMessage(event)" class="flex space-x-3">
-            <input 
-              type="text" 
-              id="chatInput"
-              placeholder="Ask me about your performance..."
-              class="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              required>
-            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition transform hover:scale-105 flex items-center space-x-2 shadow-lg">
-              <span>Send</span>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-              </svg>
+          <div id="contextStatusCard"
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4 border-l-4 border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2 mb-2">
+              <div id="statusDot" class="w-2.5 h-2.5 rounded-full bg-gray-300 flex-shrink-0"></div>
+              <p class="text-xs font-black uppercase tracking-widest text-gray-500">Analysis Data</p>
+            </div>
+            <p id="contextStatusText" class="text-sm text-gray-600 dark:text-gray-400">No match loaded yet.</p>
+            <button onclick="showPage('analysis')"
+              class="mt-3 w-full py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition">
+              Upload a Match →
             </button>
-          </form>
+          </div>
+
+          <div id="metricsSnapshot" class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+            <p class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Last Match</p>
+            <div id="snapshotGrid" class="grid grid-cols-2 gap-2"></div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+            <p class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Suggested Questions</p>
+            <div class="space-y-2">
+              ${[
+                ['⚠️','What are my biggest weaknesses?'],
+                ['💥','How do I improve my smash?'],
+                ['🗺','Where am I losing points on court?'],
+                ['📈','Compare me to an intermediate player'],
+                ['🏋️','Give me a training plan this week'],
+                ['🎯','How can I be more consistent?'],
+              ].map(([icon,text]) => `
+                <button onclick="usePrompt(${JSON.stringify(text)})"
+                  class="w-full text-left flex items-start gap-2 p-2.5 rounded-xl
+                         bg-gray-50 dark:bg-gray-700/50 hover:bg-blue-50 dark:hover:bg-blue-900/30
+                         text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-300
+                         transition text-xs font-medium">
+                  <span class="flex-shrink-0">${icon}</span><span>${text}</span>
+                </button>`).join('')}
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+            <p class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Session</p>
+            <button onclick="clearConversation()"
+              class="w-full py-2 text-xs font-bold bg-gray-100 dark:bg-gray-700
+                     hover:bg-red-50 dark:hover:bg-red-900/30
+                     text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400
+                     rounded-xl transition">
+              🗑 Clear Chat
+            </button>
+          </div>
+
         </div>
+
+        <!-- CHAT WINDOW -->
+        <div class="xl:col-span-3 flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+
+          <div id="chatMessages" class="flex-1 overflow-y-auto p-5 space-y-5">
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex-shrink-0
+                          flex items-center justify-center shadow-md">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3
+                       m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547
+                       A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531
+                       c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+              </div>
+              <div class="flex-1 bg-gray-50 dark:bg-gray-700/60 rounded-2xl rounded-tl-sm p-4 shadow-sm">
+                <p class="text-sm font-bold text-gray-900 dark:text-white mb-1">Ready to coach you.</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                  Upload a match in the <strong>Analysis tab</strong> and I'll personalise every answer
+                  to your real stroke data, speed, and positioning. Or ask me any badminton question now.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/40">
+            <form onsubmit="sendChatMessage(event)" class="flex gap-3 items-end">
+              <textarea id="chatInput" rows="1" placeholder="Ask your coach anything…"
+                onkeydown="handleChatKeydown(event)" oninput="autoResizeTA(this)"
+                class="flex-1 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600
+                       bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       transition text-sm resize-none leading-5 max-h-32"></textarea>
+              <button type="submit"
+                class="flex-shrink-0 w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl
+                       transition flex items-center justify-center shadow-md">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+              </button>
+            </form>
+            <p class="text-xs text-gray-400 mt-2 text-center">Enter to send · Shift+Enter for new line</p>
+          </div>
+        </div>
+
       </div>
     `;
   }
 
-  // ============================================================
-  // CHAT STATE
-  // ============================================================
-  let currentAnalysisData = null;
-  let conversationHistory = [];
+  // ── UI helpers ───────────────────────────────────────────────────
+  window.handleChatKeydown = function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      e.target.closest('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  };
+  window.autoResizeTA = function(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 128) + 'px';
+  };
+  window.usePrompt = function(text) {
+    const inp = document.getElementById('chatInput');
+    if (inp) { inp.value = text; inp.focus(); }
+  };
+  window.clearConversation = function() {
+    conversationHistory = [];
+    const msgs = document.getElementById('chatMessages');
+    if (msgs) msgs.innerHTML = '<div class="text-center py-8"><p class="text-sm text-gray-400">Chat cleared.</p></div>';
+  };
 
-  // ============================================================
-  // INITIALIZATION
-  // ============================================================
+  // ── Load analysis ────────────────────────────────────────────────
   async function loadLatestAnalysis() {
     try {
-      const response = await fetch('http://127.0.0.1:8000/latest-analysis');
-      if (response.ok) {
-        currentAnalysisData = await response.json();
-        console.log('📊 Loaded analysis data for chat:', currentAnalysisData);
-        showAnalysisLoadedIndicator(true);
-        return true;
-      } else {
-        showAnalysisLoadedIndicator(false);
-        return false;
+      const res = await fetch(`${API}/latest-analysis`);
+      if (res.ok) { currentAnalysisData = await res.json(); updateContextPanel(true); return true; }
+    } catch (_) {}
+    currentAnalysisData = null; updateContextPanel(false); return false;
+  }
+
+  window.reloadAnalysisData = async function() {
+    const loaded = await loadLatestAnalysis();
+    appendMessage('assistant', loaded
+      ? '✅ Analysis reloaded! Ask me anything about your latest match.'
+      : '⚠️ No analysis found. Upload a match video first.');
+  };
+
+  function updateContextPanel(loaded) {
+    const card     = document.getElementById('contextStatusCard');
+    const dot      = document.getElementById('statusDot');
+    const text     = document.getElementById('contextStatusText');
+    const snapshot = document.getElementById('metricsSnapshot');
+    const grid     = document.getElementById('snapshotGrid');
+    if (!card) return;
+
+    if (loaded && currentAnalysisData?.metrics) {
+      const m = currentAnalysisData.metrics;
+      card.style.borderLeftColor = '#22c55e';
+      if (dot)  { dot.classList.remove('bg-gray-300'); dot.classList.add('bg-green-400'); }
+      if (text) text.textContent = 'Match data loaded ✓';
+      const btn = card.querySelector('button');
+      if (btn) btn.remove();
+
+      if (snapshot && grid) {
+        snapshot.classList.remove('hidden');
+        grid.innerHTML = [
+          ['Avg Speed',`${(m.avg_shuttle_speed_km_h||0).toFixed(0)} km/h`,'text-blue-600'],
+          ['Max Speed',`${(m.max_shuttle_speed_km_h||0).toFixed(0)} km/h`,'text-green-600'],
+          ['Rallies',m.total_rallies||0,'text-purple-600'],
+          ['Acc',`${m.consistency_percent||0}%`,'text-yellow-600'],
+          ['Smashes',m.stroke_counts?.smash||0,'text-red-600'],
+          ['Rating',currentAnalysisData.insights?.overall_rating||'—','text-indigo-600'],
+        ].map(([label,val,color]) => `
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-2 text-center">
+            <p class="text-xs font-black ${color}">${val}</p>
+            <p class="text-xs text-gray-400 mt-0.5">${label}</p>
+          </div>`).join('');
       }
-    } catch (err) {
-      console.log('⚠️ No analysis data available yet');
-      currentAnalysisData = null;
-      showAnalysisLoadedIndicator(false);
-      return false;
-    }
-  }
-
-  function showAnalysisLoadedIndicator(loaded) {
-    const indicator = document.getElementById('analysisIndicator');
-    const noIndicator = document.getElementById('noAnalysisIndicator');
-    const statusIcon = document.getElementById('analysisStatusIcon');
-    const noIcon = document.getElementById('noAnalysisIcon');
-    
-    if (loaded) {
-      indicator?.classList.remove('hidden');
-      noIndicator?.classList.add('hidden');
-      statusIcon?.classList.remove('hidden');
-      noIcon?.classList.add('hidden');
     } else {
-      indicator?.classList.add('hidden');
-      noIndicator?.classList.remove('hidden');
-      statusIcon?.classList.add('hidden');
-      noIcon?.classList.remove('hidden');
+      card.style.borderLeftColor = '';
+      if (dot) { dot.classList.remove('bg-green-400'); dot.classList.add('bg-gray-300'); }
+      if (text) text.textContent = 'No match loaded yet.';
+      if (snapshot) snapshot.classList.add('hidden');
     }
   }
 
-  function initializeChatPage() {
-    console.log('🤖 Initializing chat page...');
-    loadLatestAnalysis();
-  }
+  function initializeChatPage() { loadLatestAnalysis(); }
 
-  // ============================================================
-  // MESSAGE HANDLING
-  // ============================================================
+  // ── Send / receive ───────────────────────────────────────────────
   function sendChatMessage(event) {
     event.preventDefault();
     const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Add user message to UI
-    appendMessage('user', message);
-    
-    // Clear input
-    input.value = '';
-    
-    // Send to AI
-    sendToAI(message);
+    const msg   = input.value.trim();
+    if (!msg) return;
+    appendMessage('user', msg);
+    input.value = ''; input.style.height = 'auto';
+    sendToAI(msg);
   }
 
   function appendMessage(role, content) {
-    const chatMessages = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    
+    const msgs = document.getElementById('chatMessages');
+    if (!msgs) return;
+    const div = document.createElement('div');
     if (role === 'user') {
-      messageDiv.className = 'flex items-start space-x-3 justify-end';
-      messageDiv.innerHTML = `
-        <div class="flex-1 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-lg p-4 max-w-2xl ml-auto shadow-lg">
-          <p class="whitespace-pre-wrap">${escapeHtml(content)}</p>
+      div.className = 'flex items-end gap-3 justify-end';
+      div.innerHTML = `
+        <div class="max-w-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white
+                    rounded-2xl rounded-br-sm px-4 py-3 shadow-md">
+          <p class="text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(content)}</p>
         </div>
-        <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center font-bold text-white shadow-lg">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
-        </div>
-      `;
+        <div class="w-8 h-8 rounded-xl bg-gray-400 flex-shrink-0 flex items-center justify-center
+                    text-white text-xs font-black shadow">JD</div>`;
     } else {
-      messageDiv.className = 'flex items-start space-x-3';
-      messageDiv.innerHTML = `
-        <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+      div.className = 'flex items-start gap-3';
+      div.innerHTML = `
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex-shrink-0
+                    flex items-center justify-center shadow-md">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3
+                 m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547
+                 A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531
+                 c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
           </svg>
         </div>
-        <div class="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg p-4 shadow">
-          <div class="prose prose-sm dark:prose-invert max-w-none">
+        <div class="flex-1 bg-gray-50 dark:bg-gray-700/60 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+          <div class="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
             ${formatAIResponse(content)}
           </div>
-        </div>
-      `;
+        </div>`;
     }
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
   }
 
   async function sendToAI(userMessage) {
-    // Show typing indicator
-    const typingDiv = showTypingIndicator();
-    
+    const typing = showTyping();
     try {
-      // Build system prompt with analysis data
-      let systemPrompt = buildSystemPrompt();
-      
-      // Add user message to history
-      conversationHistory.push({ role: 'user', content: userMessage });
-      
-      // Call Claude API
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      conversationHistory.push({ role:'user', content:userMessage });
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 2000,
-          system: systemPrompt,
-          messages: conversationHistory
+          model:'claude-sonnet-4-20250514', max_tokens:1000,
+          system: buildSystemPrompt(), messages: conversationHistory
         })
       });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      const aiMessage = data.content[0].text;
-      
-      // Add to history
-      conversationHistory.push({ role: 'assistant', content: aiMessage });
-      
-      // Remove typing indicator
-      typingDiv.remove();
-      
-      // Show AI response
-      appendMessage('assistant', aiMessage);
-      
-    } catch (err) {
-      console.error('❌ Chat error:', err);
-      typingDiv.remove();
-      appendMessage('assistant', 'Sorry, I encountered an error connecting to the AI service. Please try again.');
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const data = await res.json();
+      const ai   = data.content[0].text;
+      conversationHistory.push({ role:'assistant', content:ai });
+      typing.remove(); appendMessage('assistant', ai);
+    } catch(err) {
+      typing.remove();
+      appendMessage('assistant', `⚠️ ${err.message}. Please try again.`);
     }
   }
 
+  // ── System prompt ────────────────────────────────────────────────
   function buildSystemPrompt() {
-    let prompt = `You are an expert badminton coach with deep knowledge of technique, tactics, and training. You analyze match performance data to provide actionable insights.
+    let p = `You are an expert badminton coach. Give concise, data-driven coaching in a direct, encouraging tone.
+Format: use **bold** for key terms, bullet points for tips, keep under 200 words unless a plan is requested. End with one actionable next step.`;
 
-  Your coaching style:
-  - Data-driven but conversational
-  - Reference specific metrics when available
-  - Explain WHY something matters, not just WHAT to do
-  - Give concrete, actionable advice
-  - Be encouraging but honest about areas needing improvement`;
-
-    if (currentAnalysisData && currentAnalysisData.metrics) {
-      const m = currentAnalysisData.metrics;
-      const insights = currentAnalysisData.insights;
-      
-      prompt += `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  📊 CURRENT MATCH ANALYSIS DATA
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  📹 Video Processing:
-  - Frames analyzed: ${m.frames_processed}
-  - Shuttle detections: ${m.detections}
-  - Detection consistency: ${m.consistency_percent?.toFixed(1)}%
-
-  🏸 Shuttle Speed Analysis:
-  - Average speed: ${m.avg_shuttle_speed_km_h?.toFixed(1)} km/h
-  - Maximum speed: ${m.max_shuttle_speed_km_h?.toFixed(1)} km/h
-  - Minimum speed: ${m.min_speed_km_h?.toFixed(1)} km/h
-  - Speed variance: ${m.speed_variance?.toFixed(1)}
-
-  ⚡ Rally Characteristics:
-  - Average rally length: ${m.avg_rally_length_seconds?.toFixed(1)} seconds (${m.avg_rally_length_frames?.toFixed(0)} frames)
-  - Total rallies: ${m.total_rallies}
-  - Total distance covered: ${m.total_distance_meters?.toFixed(1)} meters
-
-  🎯 Movement Quality:
-  - Movement smoothness score: ${m.movement_smoothness?.toFixed(1)} (lower is better)
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  💡 AI-GENERATED INSIGHTS
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  Overall Performance: ${insights.overall_rating.toUpperCase()}
-  Consistency Level: ${insights.consistency_level}
-  Shuttle Control: ${insights.shuttle_control}
-  Power Level: ${insights.power_analysis}
-  Speed Consistency: ${insights.speed_consistency}
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  IMPORTANT COACHING GUIDELINES:
-  1. ALWAYS reference specific numbers from the data above when answering
-  2. Compare player's metrics to typical ranges:
-    - Beginner: avg speed 50-100 km/h, consistency <70%
-    - Intermediate: avg speed 100-200 km/h, consistency 70-85%
-    - Advanced: avg speed 200-300+ km/h, consistency >85%
-  3. When discussing speed variance, explain what high/low variance means for their game
-  4. Explain the relationship between metrics (e.g., high variance + low smoothness = inconsistent technique)
-  5. If they ask "what should I improve?", prioritize based on the weakest metrics
-  6. Always end with 1-2 specific drills or practice suggestions`;
-    } else {
-      prompt += `\n\n⚠️ NO MATCH DATA CURRENTLY LOADED
-
-  Since no analysis data is available, you should:
-  1. Provide general badminton coaching advice
-  2. Explain what metrics would be helpful to track
-  3. Encourage the user to upload a match video for personalized analysis
-  4. Still be helpful with technique questions, rules, tactics, etc.`;
+    if (!currentAnalysisData?.metrics) {
+      p += '\n\nNo match data loaded. Give general coaching and suggest uploading a video.';
+      return p;
     }
-    
-    return prompt;
+
+    const m   = currentAnalysisData.metrics;
+    const ins = currentAnalysisData.insights || {};
+    const tac = currentAnalysisData.tactical  || {};
+    const sc  = m.stroke_counts || {};
+    const sq  = m.stroke_quality || {};
+
+    p += `\n\n━ MATCH: ${m.frames_processed} frames, ${m.consistency_percent?.toFixed(1)}% detection
+━ SPEED: avg ${m.avg_shuttle_speed_km_h?.toFixed(0)} · max ${m.max_shuttle_speed_km_h?.toFixed(0)} · var ${m.speed_variance?.toFixed(0)} km/h
+━ RALLIES: ${m.total_rallies} · avg ${m.avg_rally_length_seconds?.toFixed(1)}s · ${m.total_distance_meters?.toFixed(0)}m
+━ STROKES: Smash ${sc.smash||0}(avg ${sq.smash?.avg_speed?.toFixed(0)||0}km/h, ${sq.smash?.avg_angle?.toFixed(0)||0}°) · Clear ${sc.clear||0} · Drop ${sc.drop||0} · Drive ${sc.drive||0} · Net ${sc.net||0} · Lift ${sc.lift||0}`;
+
+    const w = tac.weaknesses||[];
+    if (w.length) p += `\n━ WEAKNESSES: ${w.map(x=>`${x.type}(${x.severity}): ${x.message}`).join('; ')}`;
+    const tips = tac.coaching_tips||[];
+    if (tips.length) p += `\n━ TIPS: ${tips.join('; ')}`;
+    p += `\n━ RATING: ${ins.overall_rating?.toUpperCase()||'?'} | Benchmarks: Beginner 50–100 · Inter 100–200 · Advanced 200–300+ km/h`;
+    return p;
   }
 
-  function showTypingIndicator() {
-    const chatMessages = document.getElementById('chatMessages');
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'flex items-start space-x-3 typing-indicator';
-    typingDiv.innerHTML = `
-      <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+  function showTyping() {
+    const msgs = document.getElementById('chatMessages');
+    const div  = document.createElement('div');
+    div.className = 'flex items-start gap-3 typing-indicator';
+    div.innerHTML = `
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700
+                  flex-shrink-0 flex items-center justify-center shadow-md">
+        <svg class="w-4 h-4 text-white animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="white" stroke-width="3" stroke-dasharray="20 40" stroke-linecap="round"/>
         </svg>
       </div>
-      <div class="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg p-4 shadow">
-        <div class="flex space-x-2">
-          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+      <div class="bg-gray-50 dark:bg-gray-700/60 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+        <div class="flex gap-1.5 items-center h-5">
+          <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+          <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:.15s"></div>
+          <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:.3s"></div>
         </div>
-      </div>
-    `;
-    
-    chatMessages.appendChild(typingDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    return typingDiv;
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
   }
 
-  // ============================================================
-  // UTILITY FUNCTIONS
-  // ============================================================
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
+  function escapeHtml(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
   function formatAIResponse(text) {
-    // Convert markdown-style formatting to HTML
     text = escapeHtml(text);
-    
-    // Bold
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Line breaks
-    text = text.replace(/\n/g, '<br>');
-    
-    // Lists
-    text = text.replace(/^- (.*?)$/gm, '<li>$1</li>');
-    text = text.replace(/(<li>.*<\/li>)/s, '<ul class="list-disc ml-4 space-y-1">$1</ul>');
-    
-    return text;
+    text = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    text = text.replace(/`([^`]+)`/g,'<code class="bg-gray-200 dark:bg-gray-600 px-1 rounded text-xs">$1</code>');
+    text = text.replace(/^[-•] (.*)$/gm,'<li class="ml-4 list-disc">$1</li>');
+    text = text.replace(/(<li[^>]*>[\s\S]*?<\/li>)+/g, m => `<ul class="space-y-1 my-2">${m}</ul>`);
+    text = text.replace(/\n\n/g,'</p><p class="mt-2">');
+    text = text.replace(/\n/g,'<br>');
+    return `<p>${text}</p>`;
   }
-}
+
+} // end guard

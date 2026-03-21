@@ -1,0 +1,144 @@
+{
+  "id": "f03d1b3d-e155-4e97-8920-a565cacea05c",
+  "timestamp": "2026-02-04T10:35:56.757310",
+  "video_path": "/Users/smaranrangarajan/Documents/GitHub/BadmintonAPP/backend/outputs/f03d1b3d-e155-4e97-8920-a565cacea05c.mp4",
+  "metrics": {
+    "frames_processed": 1591,
+    "detections": 1537,
+    "consistency_percent": 96.6,
+    "avg_shuttle_speed_km_h": 30.57,
+    "max_shuttle_speed_km_h": 304.91,
+    "min_speed_km_h": 0.0,
+    "speed_variance": 3515.28,
+    "avg_rally_length_frames": 512.3,
+    "avg_rally_length_seconds": 17.08,
+    "total_rallies": 3,
+    "total_distance_meters": 420.57,
+    "movement_smoothness": 0.628,
+    "stroke_counts": {
+      "smash": 0,
+      "clear": 0,
+      "drop": 0,
+      "net": 0,
+      "drive": 0,
+      "lift": 0,
+      "unknown": 0
+    },
+    "stroke_quality": {
+      "smash": {
+        "count": 0,
+        "avg_speed": 0,
+        "max_speed": 0,
+        "avg_angle": 0
+      },
+      "drop": {
+        "count": 0,
+        "net_clearance": 0,
+        "accuracy": 0
+      },
+      "clear": {
+        "count": 0,
+        "avg_apex": 0,
+        "depth_percentage": 0
+      },
+      "drive": {
+        "count": 0,
+        "avg_speed": 0,
+        "max_speed": 0
+      },
+      "lift": {
+        "count": 0,
+        "avg_angle": 0,
+        "consistency": 0
+      }
+    },
+    "point_outcomes": {
+      "by_stroke": {
+        "drive": {
+          "won": 3,
+          "lost": 0
+        }
+      },
+      "by_zone": {
+        "midcourt_center": {
+          "won": 2,
+          "lost": 0
+        },
+        "forecourt_center": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "by_role": {
+        "attacking": {
+          "won": 2,
+          "lost": 0
+        },
+        "neutral": {
+          "won": 1,
+          "lost": 0
+        }
+      }
+    },
+    "efficiency_ratios": {
+      "smash_to_point_percent": 0,
+      "rally_length_outcomes": {
+        "short": {
+          "won": 0,
+          "lost": 0
+        },
+        "medium": {
+          "won": 0,
+          "lost": 0
+        },
+        "long": {
+          "won": 3,
+          "lost": 0
+        }
+      },
+      "overall_win_rate": 100.0
+    },
+    "error_distribution": {
+      "total_errors": 0,
+      "error_rate_percent": 0.0,
+      "errors_by_zone": {},
+      "errors_by_stroke": {}
+    },
+    "rally_details": [
+      {
+        "length": 380,
+        "length_bucket": "long",
+        "ending_zone": "midcourt_center",
+        "final_stroke": "drive",
+        "player_role": "attacking",
+        "point_won": true,
+        "is_error": false
+      },
+      {
+        "length": 1066,
+        "length_bucket": "long",
+        "ending_zone": "forecourt_center",
+        "final_stroke": "drive",
+        "player_role": "attacking",
+        "point_won": true,
+        "is_error": false
+      },
+      {
+        "length": 91,
+        "length_bucket": "long",
+        "ending_zone": "midcourt_center",
+        "final_stroke": "drive",
+        "player_role": "neutral",
+        "point_won": true,
+        "is_error": false
+      }
+    ]
+  },
+  "insights": {
+    "consistency_level": "excellent",
+    "shuttle_control": "excellent",
+    "power_analysis": "high_power",
+    "speed_consistency": "consistent",
+    "overall_rating": "intermediate"
+  }
+}

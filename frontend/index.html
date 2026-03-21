@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-//HI
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
@@ -7,35 +6,6 @@
   <title>Badminton AI - Professional Match Analysis</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   <script>
-    console.log('🔍 RELOAD DETECTOR ACTIVE');
-    
-    // Catch beforeunload
-    window.addEventListener('beforeunload', function(e) {
-      console.error('🚨 BEFOREUNLOAD TRIGGERED!');
-      console.trace();
-      debugger; // This will pause execution
-    });
-    
-    // Catch location.reload()
-    const originalReload = window.location.reload;
-    window.location.reload = function() {
-      console.error('🚨 window.location.reload() CALLED!');
-      console.trace();
-      debugger;
-      return originalReload.apply(this, arguments);
-    };
-    
-    // Catch form submissions
-    document.addEventListener('submit', function(e) {
-      console.error('🚨 FORM SUBMITTED!');
-      console.trace();
-      debugger;
-      e.preventDefault();
-    }, true);
-    
-    console.log('✅ Reload traps set');
-  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -51,18 +21,16 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-  
-  <!-- AUTH PAGE (Landing/Sign In/Sign Up) -->
+
+  <!-- AUTH PAGE -->
   <div id="authPage" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-      <!-- Logo and Title -->
       <div class="text-center mb-8">
         <div class="text-6xl mb-4">🏸</div>
         <h1 class="text-4xl font-bold mb-2">Badminton AI</h1>
         <p class="text-gray-600 dark:text-gray-400">Professional Match Analysis Platform</p>
       </div>
 
-      <!-- Auth Card Container -->
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
         <!-- Sign In Form -->
         <div id="signInForm" class="auth-form">
@@ -70,13 +38,13 @@
           <form onsubmit="handleSignIn(event)" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Email</label>
-              <input type="email" required 
+              <input type="email" required
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="you@example.com">
             </div>
             <div>
               <label class="block text-sm font-medium mb-2">Password</label>
-              <input type="password" required 
+              <input type="password" required
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="••••••••">
             </div>
@@ -87,13 +55,13 @@
               </label>
               <a href="#" class="text-sm text-blue-600 hover:text-blue-700">Forgot password?</a>
             </div>
-            <button type="submit" 
+            <button type="submit"
               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105">
               Sign In
             </button>
           </form>
           <p class="text-center mt-6 text-sm">
-            Don't have an account? 
+            Don't have an account?
             <button onclick="showSignUp()" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</button>
           </p>
         </div>
@@ -104,13 +72,13 @@
           <form onsubmit="handleSignUp(event)" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Full Name</label>
-              <input type="text" required 
+              <input type="text" required
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="John Doe">
             </div>
             <div>
               <label class="block text-sm font-medium mb-2">Email</label>
-              <input type="email" required 
+              <input type="email" required
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="you@example.com">
             </div>
@@ -126,13 +94,13 @@
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="••••••••">
             </div>
-            <button type="submit" 
+            <button type="submit"
               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105">
               Create Account
             </button>
           </form>
           <p class="text-center mt-6 text-sm">
-            Already have an account? 
+            Already have an account?
             <button onclick="showSignIn()" class="text-blue-600 hover:text-blue-700 font-semibold">Sign In</button>
           </p>
         </div>
@@ -143,17 +111,31 @@
   <!-- MAIN APP -->
   <div id="mainApp" class="hidden"></div>
 
-  <!-- Load Components FIRST -->
+  <!-- ─── COMPONENTS (load order matters) ──────────────────────── -->
+
+  <!-- Layout & pages -->
   <script src="js/components/navigation.js"></script>
   <script src="js/components/dashboard.js"></script>
+  <script src="js/components/settings.js"></script>
+
+  <!-- New visualisation components — must load BEFORE analysis.js
+       so CourtRenderer / TacticalReplay classes exist when analysis
+       tries to instantiate them. -->
+  <script src="js/components/courtRenderer.js"></script>
+  <script src="js/components/drawingTools.js"></script>
+  <script src="js/components/playerSelector.js"></script>
+  <script src="js/components/shotAnalysisPanel.js"></script>
+  <script src="js/components/tacticalReplay.js"></script>
+
+  <!-- Analysis & chat pages (use the classes above) -->
   <script src="js/components/analysis.js"></script>
   <script src="js/components/chat.js"></script>
-  <script src="js/components/settings.js"></script>
-  
-  <!-- Load Main App Logic AFTER components -->
+
+  <!-- ─── GLOBAL APP LOGIC ─────────────────────────────────────── -->
   <script src="js/auth.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>

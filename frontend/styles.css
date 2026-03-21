@@ -1,88 +1,323 @@
-/* Custom styles for Badminton AI */
+/* ─────────────────────────────────────────────────────────────────
+   Badminton AI  —  Global Styles
+   ───────────────────────────────────────────────────────────────── */
 
-/* Smooth transitions for all interactive elements */
-* {
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+/* Smooth transitions for interactive elements (keep colours, NOT layout) */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke,
+                       opacity, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Navigation item active state */
+/* ── Navigation ──────────────────────────────────────────────────── */
 .nav-item.active {
   background-color: rgb(243 244 246);
 }
-
 .dark .nav-item.active {
   background-color: rgb(55 65 81);
 }
 
-/* Settings tab active state */
+/* ── Settings tabs ───────────────────────────────────────────────── */
 .settings-tab.active {
   color: rgb(37 99 235);
   border-bottom-width: 2px;
   border-color: rgb(37 99 235);
 }
 
-/* Custom scrollbar for chat */
-#chatMessages::-webkit-scrollbar {
-  width: 8px;
-}
+/* ── Chat scrollbar ──────────────────────────────────────────────── */
+#chatMessages::-webkit-scrollbar        { width: 8px; }
+#chatMessages::-webkit-scrollbar-track  { background: transparent; }
+#chatMessages::-webkit-scrollbar-thumb  { background: rgb(156 163 175); border-radius: 4px; }
+.dark #chatMessages::-webkit-scrollbar-thumb { background: rgb(75 85 99); }
 
-#chatMessages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-#chatMessages::-webkit-scrollbar-thumb {
-  background: rgb(156 163 175);
-  border-radius: 4px;
-}
-
-.dark #chatMessages::-webkit-scrollbar-thumb {
-  background: rgb(75 85 99);
-}
-
-/* Hover effects for cards */
-.transform.hover\:scale-105:hover {
-  transform: scale(1.05);
-}
-
-/* Drop zone hover effect */
+/* ── Drop zone ───────────────────────────────────────────────────── */
 #dropZone:hover {
   border-color: rgb(59 130 246);
   background-color: rgba(59, 130, 246, 0.05);
 }
 
-/* Loading animation */
+/* ── Animations ──────────────────────────────────────────────────── */
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
+.animate-spin { animation: spin 1s linear infinite; }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Fade in animation */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease-out; }
+
+.progress-bar-transition { transition: width 0.3s ease-out; }
+
+/* ── Scale hover (Tailwind utility backup) ───────────────────────── */
+.hover-scale:hover { transform: scale(1.05); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESULT TABS
+   ═══════════════════════════════════════════════════════════════════ */
+.result-tab-btn {
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 3px solid transparent;
+  color: rgb(107 114 128);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.result-tab-btn:hover {
+  color: rgb(37 99 235);
+}
+.result-tab-btn.active {
+  color: rgb(37 99 235);
+  border-bottom-color: rgb(37 99 235);
+}
+.dark .result-tab-btn { color: rgb(156 163 175); }
+.dark .result-tab-btn:hover,
+.dark .result-tab-btn.active { color: rgb(96 165 250); border-bottom-color: rgb(96 165 250); }
+
+/* ── Stage progress badge ────────────────────────────────────────── */
+.stage-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgb(219 234 254);
+  color: rgb(30 64 175);
+}
+.dark .stage-badge { background: rgb(30 58 138); color: rgb(147 197 253); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TACTICAL REPLAY — canvas stack
+   ═══════════════════════════════════════════════════════════════════ */
+.canvas-stack {
+  position: relative;
+  width: 100%;
+  /* height set via JS once we know the court aspect ratio */
+}
+.canvas-stack canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+}
+/* The base court canvas is below; annotation canvas is on top */
+#replayCanvas    { z-index: 1; }
+#annotationCanvas {
+  z-index: 2;
+  cursor: crosshair;
+  /* transparent by default — only drawing tools write to it */
+}
+/* Spacer div that gives the stack its height */
+.canvas-stack-spacer {
+  width: 100%;
+  padding-bottom: 70%; /* ~court aspect ratio (13.4 / 6.1 * 32%) — canvas JS overrides */
+  pointer-events: none;
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
+/* ── Replay controls bar ─────────────────────────────────────────── */
+.replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  background: rgb(249 250 251);
+  border-radius: 0.75rem;
+  margin-top: 0.75rem;
+}
+.dark .replay-controls {
+  background: rgb(31 41 55);
 }
 
-/* Progress bar animation */
-.progress-bar-transition {
-  transition: width 0.3s ease-out;
+.replay-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  border: 1px solid rgb(209 213 219);
+  color: rgb(55 65 81);
+  transition: background 0.1s, transform 0.1s;
 }
+.replay-btn:hover {
+  background: rgb(239 246 255);
+  border-color: rgb(147 197 253);
+  color: rgb(37 99 235);
+  transform: scale(1.05);
+}
+.replay-btn.primary {
+  background: rgb(37 99 235);
+  border-color: rgb(37 99 235);
+  color: white;
+}
+.replay-btn.primary:hover {
+  background: rgb(29 78 216);
+  color: white;
+}
+.dark .replay-btn {
+  background: rgb(55 65 81);
+  border-color: rgb(75 85 99);
+  color: rgb(209 213 219);
+}
+.dark .replay-btn:hover {
+  background: rgb(30 58 138);
+  border-color: rgb(96 165 250);
+  color: rgb(147 197 253);
+}
+
+.replay-scrubber {
+  flex: 1;
+  min-width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  accent-color: rgb(37 99 235);
+}
+
+.speed-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 2.5rem;
+  text-align: center;
+  color: rgb(37 99 235);
+}
+
+/* ── Drawing toolbar ─────────────────────────────────────────────── */
+.drawing-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 0.75rem;
+  background: rgb(249 250 251);
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+}
+.dark .drawing-toolbar { background: rgb(31 41 55); }
+
+.draw-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  border: 1.5px solid rgb(209 213 219);
+  color: rgb(55 65 81);
+  transition: all 0.1s;
+}
+.draw-tool-btn:hover,
+.draw-tool-btn.active {
+  background: rgb(239 246 255);
+  border-color: rgb(37 99 235);
+  color: rgb(37 99 235);
+}
+.dark .draw-tool-btn {
+  background: rgb(55 65 81);
+  border-color: rgb(75 85 99);
+  color: rgb(209 213 219);
+}
+.dark .draw-tool-btn:hover,
+.dark .draw-tool-btn.active {
+  background: rgb(30 58 138);
+  border-color: rgb(96 165 250);
+  color: rgb(147 197 253);
+}
+.draw-tool-btn.danger:hover {
+  background: rgb(254 242 242);
+  border-color: rgb(239 68 68);
+  color: rgb(220 38 38);
+}
+
+.color-picker-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid rgb(209 213 219);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+}
+.color-picker-btn input[type="color"] {
+  width: 150%;
+  height: 150%;
+  margin: -25%;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+}
+.color-swatch {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+}
+
+/* ── Heatmap legend ──────────────────────────────────────────────── */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+}
+.heatmap-gradient {
+  width: 80px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, rgba(59,130,246,0.1), rgba(239,68,68,0.9));
+}
+
+/* ── Player selector mode toggle ─────────────────────────────────── */
+.mode-toggle-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid rgb(209 213 219);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+}
+.mode-toggle-btn.active {
+  background: rgb(37 99 235);
+  border-color: rgb(37 99 235);
+  color: white;
+}
+.dark .mode-toggle-btn { border-color: rgb(75 85 99); color: rgb(209 213 219); }
+.dark .mode-toggle-btn.active { background: rgb(37 99 235); border-color: rgb(37 99 235); color: white; }
+
+/* ── Shot quality pill ───────────────────────────────────────────── */
+.quality-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.quality-excellent { background: rgb(220 252 231); color: rgb(22 101 52); }
+.quality-good      { background: rgb(219 234 254); color: rgb(30 64 175); }
+.quality-neutral   { background: rgb(254 249 195); color: rgb(133 77 14); }
+.quality-poor      { background: rgb(254 226 226); color: rgb(153 27 27); }
+.dark .quality-excellent { background: rgb(20 83 45);  color: rgb(134 239 172); }
+.dark .quality-good      { background: rgb(30 58 138); color: rgb(147 197 253); }
+.dark .quality-neutral   { background: rgb(120 53 15); color: rgb(253 230 138); }
+.dark .quality-poor      { background: rgb(127 29 29); color: rgb(252 165 165); }

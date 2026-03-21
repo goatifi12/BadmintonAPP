@@ -1,0 +1,747 @@
+{
+  "id": "b3d9eca8-9f68-4565-afa6-fe5a4b5d111c",
+  "timestamp": "2026-03-15T21:05:35.946777",
+  "video_path": "/Users/smaranrangarajan/Documents/GitHub/BadmintonAPP/backend/outputs/b3d9eca8-9f68-4565-afa6-fe5a4b5d111c.mp4",
+  "metrics": {
+    "frames_processed": 1591,
+    "detections": 1591,
+    "consistency_percent": 100.0,
+    "avg_shuttle_speed_km_h": 23.72,
+    "max_shuttle_speed_km_h": 237.65,
+    "min_speed_km_h": 0.0,
+    "speed_variance": 1484.54,
+    "avg_rally_length_frames": 1591.0,
+    "avg_rally_length_seconds": 53.03,
+    "total_rallies": 1,
+    "total_distance_meters": 348.71,
+    "movement_smoothness": 0.722,
+    "stroke_counts": {
+      "smash": 2,
+      "clear": 36,
+      "drop": 701,
+      "net": 16,
+      "drive": 38,
+      "lift": 505,
+      "unknown": 292
+    },
+    "stroke_quality": {
+      "smash": {
+        "count": 2,
+        "avg_speed": 206.6,
+        "max_speed": 208.3,
+        "avg_angle": 168.0
+      },
+      "drop": {
+        "count": 701,
+        "net_clearance": -1.1,
+        "accuracy": 44.0
+      },
+      "clear": {
+        "count": 36,
+        "avg_apex": 32.6,
+        "depth_percentage": 2.0
+      },
+      "drive": {
+        "count": 38,
+        "avg_speed": 105.2,
+        "max_speed": 147.7
+      },
+      "lift": {
+        "count": 505,
+        "avg_angle": 103.8,
+        "consistency": 32.0
+      }
+    },
+    "point_outcomes": {
+      "by_stroke": {
+        "drive": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "by_zone": {
+        "midcourt_center": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "by_role": {
+        "neutral": {
+          "won": 1,
+          "lost": 0
+        }
+      }
+    },
+    "efficiency_ratios": {
+      "smash_to_point_percent": 0,
+      "rally_length_outcomes": {
+        "short": {
+          "won": 0,
+          "lost": 0
+        },
+        "medium": {
+          "won": 0,
+          "lost": 0
+        },
+        "long": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "overall_win_rate": 100.0
+    },
+    "error_distribution": {
+      "total_errors": 0,
+      "error_rate_percent": 0.0,
+      "errors_by_zone": {},
+      "errors_by_stroke": {}
+    },
+    "rally_details": [
+      {
+        "length": 1591,
+        "length_bucket": "long",
+        "ending_zone": "midcourt_center",
+        "final_stroke": "drive",
+        "player_role": "neutral",
+        "point_won": true,
+        "is_error": false
+      }
+    ]
+  },
+  "tactical": {
+    "heatmaps": {
+      "1": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0027397260273972603,
+          0.028310502283105023,
+          0.0027397260273972603,
+          0.0027397260273972603,
+          0.0,
+          0.07031963470319634
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0073059360730593605,
+          0.015525114155251141,
+          0.0073059360730593605,
+          0.4657534246575342
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0091324200913242,
+          0.1278538812785388,
+          0.12146118721461187,
+          0.2776255707762557
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.011872146118721462,
+          0.021917808219178082,
+          0.014611872146118721,
+          0.0045662100456621,
+          0.0547945205479452
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0027397260273972603,
+          0.014611872146118721
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0009132420091324201,
+          0.0018264840182648401
+        ]
+      ],
+      "0": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.010256410256410256,
+          0.0,
+          0.0,
+          0.0,
+          0.005128205128205128,
+          0.4358974358974359
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.035897435897435895,
+          0.18974358974358974,
+          0.046153846153846156,
+          0.07692307692307693,
+          0.10256410256410256,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.05641025641025641,
+          0.015384615384615385,
+          0.1282051282051282,
+          0.035897435897435895,
+          0.14871794871794872,
+          0.06666666666666667,
+          0.3435897435897436
+        ],
+        [
+          0.015384615384615385,
+          0.005128205128205128,
+          0.015384615384615385,
+          0.015384615384615385,
+          0.020512820512820513,
+          0.13333333333333333,
+          0.035897435897435895,
+          0.015384615384615385,
+          0.020512820512820513,
+          0.020512820512820513
+        ],
+        [
+          0.020512820512820513,
+          0.005128205128205128,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.015384615384615385,
+          0.020512820512820513,
+          0.015384615384615385,
+          0.07692307692307693
+        ],
+        [
+          0.010256410256410256,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "movement_stats": {
+      "3": {
+        "total_distance_m": 0.3,
+        "avg_speed_ms": 0.03,
+        "max_speed_ms": 0.14
+      },
+      "2": {
+        "total_distance_m": 18.71,
+        "avg_speed_ms": 3.03,
+        "max_speed_ms": 56.91
+      },
+      "4": {
+        "total_distance_m": 0.1,
+        "avg_speed_ms": 0.05,
+        "max_speed_ms": 0.3
+      },
+      "1": {
+        "total_distance_m": 9.86,
+        "avg_speed_ms": 7.78,
+        "max_speed_ms": 52.84
+      },
+      "9": {
+        "total_distance_m": 0.1,
+        "avg_speed_ms": 0.06,
+        "max_speed_ms": 0.18
+      },
+      "11": {
+        "total_distance_m": 0.0,
+        "avg_speed_ms": 0.01,
+        "max_speed_ms": 0.01
+      },
+      "13": {
+        "total_distance_m": 0.11,
+        "avg_speed_ms": 0.03,
+        "max_speed_ms": 0.12
+      },
+      "15": {
+        "total_distance_m": 11.71,
+        "avg_speed_ms": 2.93,
+        "max_speed_ms": 11.34
+      },
+      "16": {
+        "total_distance_m": 2.1,
+        "avg_speed_ms": 3.95,
+        "max_speed_ms": 10.71
+      },
+      "18": {
+        "total_distance_m": 3.86,
+        "avg_speed_ms": 16.54,
+        "max_speed_ms": 37.69
+      },
+      "21": {
+        "total_distance_m": 0.43,
+        "avg_speed_ms": 4.33,
+        "max_speed_ms": 6.59
+      },
+      "39": {
+        "total_distance_m": 2.05,
+        "avg_speed_ms": 4.72,
+        "max_speed_ms": 8.61
+      },
+      "46": {
+        "total_distance_m": 5.3,
+        "avg_speed_ms": 3.69,
+        "max_speed_ms": 8.0
+      },
+      "34": {
+        "total_distance_m": 0.64,
+        "avg_speed_ms": 19.35,
+        "max_speed_ms": 19.35
+      },
+      "56": {
+        "total_distance_m": 3.23,
+        "avg_speed_ms": 0.94,
+        "max_speed_ms": 3.32
+      },
+      "55": {
+        "total_distance_m": 7.0,
+        "avg_speed_ms": 3.34,
+        "max_speed_ms": 16.54
+      },
+      "57": {
+        "total_distance_m": 0.61,
+        "avg_speed_ms": 0.47,
+        "max_speed_ms": 1.37
+      },
+      "60": {
+        "total_distance_m": 0.54,
+        "avg_speed_ms": 0.04,
+        "max_speed_ms": 0.35
+      },
+      "59": {
+        "total_distance_m": 30.0,
+        "avg_speed_ms": 2.34,
+        "max_speed_ms": 37.22
+      },
+      "61": {
+        "total_distance_m": 0.0,
+        "avg_speed_ms": 0.06,
+        "max_speed_ms": 0.06
+      },
+      "58": {
+        "total_distance_m": 12.91,
+        "avg_speed_ms": 11.07,
+        "max_speed_ms": 77.91
+      },
+      "63": {
+        "total_distance_m": 0.06,
+        "avg_speed_ms": 0.2,
+        "max_speed_ms": 0.79
+      },
+      "64": {
+        "total_distance_m": 0.01,
+        "avg_speed_ms": 0.07,
+        "max_speed_ms": 0.11
+      },
+      "65": {
+        "total_distance_m": 0.03,
+        "avg_speed_ms": 0.13,
+        "max_speed_ms": 0.29
+      },
+      "66": {
+        "total_distance_m": 0.04,
+        "avg_speed_ms": 0.12,
+        "max_speed_ms": 0.21
+      },
+      "67": {
+        "total_distance_m": 0.0,
+        "avg_speed_ms": 0.01,
+        "max_speed_ms": 0.01
+      },
+      "68": {
+        "total_distance_m": 12.46,
+        "avg_speed_ms": 4.85,
+        "max_speed_ms": 18.61
+      },
+      "71": {
+        "total_distance_m": 0.19,
+        "avg_speed_ms": 2.79,
+        "max_speed_ms": 4.95
+      },
+      "69": {
+        "total_distance_m": 0.84,
+        "avg_speed_ms": 8.4,
+        "max_speed_ms": 13.52
+      },
+      "76": {
+        "total_distance_m": 0.42,
+        "avg_speed_ms": 6.23,
+        "max_speed_ms": 12.31
+      },
+      "77": {
+        "total_distance_m": 4.94,
+        "avg_speed_ms": 7.81,
+        "max_speed_ms": 20.22
+      },
+      "91": {
+        "total_distance_m": 1.02,
+        "avg_speed_ms": 7.66,
+        "max_speed_ms": 9.58
+      },
+      "96": {
+        "total_distance_m": 1.63,
+        "avg_speed_ms": 9.81,
+        "max_speed_ms": 14.28
+      },
+      "95": {
+        "total_distance_m": 12.9,
+        "avg_speed_ms": 11.72,
+        "max_speed_ms": 66.36
+      },
+      "98": {
+        "total_distance_m": 11.74,
+        "avg_speed_ms": 5.5,
+        "max_speed_ms": 61.56
+      },
+      "94": {
+        "total_distance_m": 2.62,
+        "avg_speed_ms": 8.73,
+        "max_speed_ms": 22.55
+      },
+      "101": {
+        "total_distance_m": 5.51,
+        "avg_speed_ms": 3.52,
+        "max_speed_ms": 30.12
+      },
+      "104": {
+        "total_distance_m": 0.34,
+        "avg_speed_ms": 0.03,
+        "max_speed_ms": 0.15
+      },
+      "105": {
+        "total_distance_m": 0.31,
+        "avg_speed_ms": 0.05,
+        "max_speed_ms": 0.72
+      },
+      "103": {
+        "total_distance_m": 11.58,
+        "avg_speed_ms": 2.69,
+        "max_speed_ms": 50.53
+      },
+      "102": {
+        "total_distance_m": 7.84,
+        "avg_speed_ms": 21.37,
+        "max_speed_ms": 118.68
+      },
+      "109": {
+        "total_distance_m": 0.1,
+        "avg_speed_ms": 0.06,
+        "max_speed_ms": 0.23
+      }
+    },
+    "shot_patterns": {
+      "drop": {
+        "count": 519,
+        "avg_score": 43.6,
+        "excellent": 2,
+        "poor": 192
+      },
+      "clear": {
+        "count": 32,
+        "avg_score": 57.1,
+        "excellent": 4,
+        "poor": 1
+      },
+      "lift": {
+        "count": 326,
+        "avg_score": 32.0,
+        "excellent": 0,
+        "poor": 244
+      },
+      "net": {
+        "count": 15,
+        "avg_score": 48.7,
+        "excellent": 0,
+        "poor": 2
+      },
+      "drive": {
+        "count": 40,
+        "avg_score": 53.5,
+        "excellent": 0,
+        "poor": 0
+      },
+      "smash": {
+        "count": 2,
+        "avg_score": 45.0,
+        "excellent": 0,
+        "poor": 0
+      }
+    },
+    "weaknesses": [
+      {
+        "type": "stroke_quality",
+        "stroke": "smash",
+        "severity": "high",
+        "message": "Smash average score is below 55. Consider improving wrist snap and targeting deep sidelines."
+      },
+      {
+        "type": "positioning",
+        "team": 0,
+        "severity": "medium",
+        "message": "Team 0 rarely covers the forecourt \u2014 vulnerable to net drops."
+      },
+      {
+        "type": "movement",
+        "player": 3,
+        "severity": "medium",
+        "message": "Player 3 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 4,
+        "severity": "medium",
+        "message": "Player 4 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 9,
+        "severity": "medium",
+        "message": "Player 9 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 11,
+        "severity": "medium",
+        "message": "Player 11 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 13,
+        "severity": "medium",
+        "message": "Player 13 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 57,
+        "severity": "medium",
+        "message": "Player 57 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 60,
+        "severity": "medium",
+        "message": "Player 60 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 61,
+        "severity": "medium",
+        "message": "Player 61 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 63,
+        "severity": "medium",
+        "message": "Player 63 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 64,
+        "severity": "medium",
+        "message": "Player 64 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 65,
+        "severity": "medium",
+        "message": "Player 65 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 66,
+        "severity": "medium",
+        "message": "Player 66 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 67,
+        "severity": "medium",
+        "message": "Player 67 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 104,
+        "severity": "medium",
+        "message": "Player 104 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 105,
+        "severity": "medium",
+        "message": "Player 105 shows limited court coverage \u2014 focus on split-step recovery drills."
+      },
+      {
+        "type": "movement",
+        "player": 109,
+        "severity": "medium",
+        "message": "Player 109 shows limited court coverage \u2014 focus on split-step recovery drills."
+      }
+    ],
+    "coaching_tips": [
+      "Smash average score is below 55. Consider improving wrist snap and targeting deep sidelines.",
+      "Team 0 rarely covers the forecourt \u2014 vulnerable to net drops.",
+      "Player 3 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 4 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 9 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 11 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 13 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 57 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 60 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 61 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 63 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 64 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 65 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 66 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 67 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 104 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 105 shows limited court coverage \u2014 focus on split-step recovery drills.",
+      "Player 109 shows limited court coverage \u2014 focus on split-step recovery drills."
+    ]
+  },
+  "replay_path": "/Users/smaranrangarajan/Documents/GitHub/BadmintonAPP/backend/outputs/9478225a-4dde-4f39-865b-39cddfd1519e_replay.json",
+  "insights": {
+    "consistency_level": "excellent",
+    "shuttle_control": "excellent",
+    "power_analysis": "moderate_power",
+    "speed_consistency": "consistent",
+    "overall_rating": "intermediate"
+  }
+}

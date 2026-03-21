@@ -1,0 +1,102 @@
+{
+  "id": "cc335340-7bed-4950-a5b1-907fb06d32d5",
+  "timestamp": "2026-01-30T20:29:01.235653",
+  "video_path": "/Users/smaranrangarajan/Documents/GitHub/BadmintonAPP/backend/outputs/cc335340-7bed-4950-a5b1-907fb06d32d5.mp4",
+  "metrics": {
+    "frames_processed": 300,
+    "detections": 300,
+    "consistency_percent": 100.0,
+    "avg_shuttle_speed_km_h": 43.92,
+    "max_shuttle_speed_km_h": 705.58,
+    "min_speed_km_h": 0.0,
+    "speed_variance": 6076.7,
+    "avg_rally_length_frames": 300.0,
+    "avg_rally_length_seconds": 10.0,
+    "total_rallies": 1,
+    "total_distance_meters": 121.61,
+    "movement_smoothness": 0.562,
+    "stroke_counts": {
+      "smash": 2,
+      "clear": 3,
+      "drop": 2,
+      "net": 0
+    },
+    "stroke_quality": {
+      "smash": {
+        "avg_speed": 607.291653745199,
+        "max_speed": 627.9800001376713,
+        "avg_angle": 86.13311932762275
+      },
+      "drop": {
+        "net_clearance": 45,
+        "accuracy": 10
+      },
+      "clear": {
+        "avg_apex": 5.5,
+        "depth_percentage": 75
+      }
+    },
+    "point_outcomes": {
+      "by_stroke": {
+        "drive": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "by_zone": {
+        "forecourt_center": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "by_role": {
+        "attacking": {
+          "won": 1,
+          "lost": 0
+        }
+      }
+    },
+    "efficiency_ratios": {
+      "smash_to_point_percent": 0,
+      "rally_length_outcomes": {
+        "short": {
+          "won": 0,
+          "lost": 0
+        },
+        "medium": {
+          "won": 0,
+          "lost": 0
+        },
+        "long": {
+          "won": 1,
+          "lost": 0
+        }
+      },
+      "overall_win_rate": 100.0
+    },
+    "error_distribution": {
+      "total_errors": 0,
+      "error_rate_percent": 0.0,
+      "errors_by_zone": {},
+      "errors_by_stroke": {}
+    },
+    "rally_details": [
+      {
+        "length": 300,
+        "length_bucket": "long",
+        "ending_zone": "forecourt_center",
+        "final_stroke": "drive",
+        "player_role": "attacking",
+        "point_won": true,
+        "is_error": false
+      }
+    ]
+  },
+  "insights": {
+    "consistency_level": "excellent",
+    "shuttle_control": "excellent",
+    "power_analysis": "high_power",
+    "speed_consistency": "variable",
+    "overall_rating": "intermediate"
+  }
+}
