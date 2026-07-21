@@ -147,13 +147,6 @@ Uploads a video and triggers analysis.
 
 ---
 
-## Viewing the Website/Running the Backend
-Have 2 terminals created:
-* In the first terminal first type cd backend
-* Then type uvicorn main:app --reload --host 127.0.0.1 --port 8000 (This is to run the backend)
-* In the second terminal type python3 -m http.server 5500 (This loads the HTTP Server)
-  
-
 ## 🎯 Project Goals
 
 This project was built to demonstrate:
