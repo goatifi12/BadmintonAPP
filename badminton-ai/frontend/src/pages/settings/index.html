@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Settings — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="../../components/app-nav/app-nav.css" />
+  <link rel="stylesheet" href="../../styles/app-shell.css" />
+  <link rel="stylesheet" href="./settings.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="app-shell">
+    <app-nav active="settings"></app-nav>
+
+    <main class="app-main app-main-narrow">
+      <h1 class="settings-title">Settings</h1>
+
+      <section class="card settings-card">
+        <h2>Profile</h2>
+        <dl class="profile-list">
+          <div>
+            <dt>Name</dt>
+            <dd id="profileName">—</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd id="profileEmail">—</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card settings-card">
+        <h2>Appearance</h2>
+        <p class="settings-hint">Choose how Badminton AI looks on this device.</p>
+        <div class="theme-options" role="radiogroup" aria-label="Theme">
+          <button class="theme-option" data-theme-option="system">System</button>
+          <button class="theme-option" data-theme-option="light">Light</button>
+          <button class="theme-option" data-theme-option="dark">Dark</button>
+        </div>
+      </section>
+
+      <section class="card settings-card">
+        <h2>Account</h2>
+        <p class="settings-hint">Sign out of Badminton AI on this device.</p>
+        <button id="signOutBtn" class="btn btn-secondary">Sign out</button>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./settings.ts"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Results — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="../../components/app-nav/app-nav.css" />
+  <link rel="stylesheet" href="../../styles/app-shell.css" />
+  <link rel="stylesheet" href="./results.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="app-shell">
+    <app-nav active="reports"></app-nav>
+
+    <main class="app-main">
+      <div id="loadingNotice" class="card notice-card">Loading analysis…</div>
+      <div id="notDoneNotice" class="card notice-card hidden">
+        This analysis isn't finished yet. <a id="goToProcessingLink" href="#">View progress</a>
+      </div>
+
+      <div id="resultsContent" class="results-content hidden">
+        <div class="results-header">
+          <div>
+            <h1 id="jobTitle">Match analysis</h1>
+            <p id="jobMeta" class="results-meta"></p>
+          </div>
+          <span id="confidenceBadge" class="confidence-badge"></span>
+        </div>
+
+        <section class="kpi-grid">
+          <div class="card kpi-tile">
+            <span class="kpi-label">Avg shuttle speed</span>
+            <span id="kpiAvgSpeed" class="kpi-value skeleton">00</span>
+          </div>
+          <div class="card kpi-tile">
+            <span class="kpi-label">Max shuttle speed</span>
+            <span id="kpiMaxSpeed" class="kpi-value skeleton">00</span>
+          </div>
+          <div class="card kpi-tile">
+            <span class="kpi-label">Total shots</span>
+            <span id="kpiShots" class="kpi-value skeleton">00</span>
+          </div>
+          <div class="card kpi-tile">
+            <span class="kpi-label">Rallies</span>
+            <span id="kpiRallies" class="kpi-value skeleton">00</span>
+          </div>
+        </section>
+
+        <section class="results-grid">
+          <div class="card chart-card">
+            <h2>Shot counts</h2>
+            <div class="chart-box"><canvas id="strokeChart"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <h2>Shot mix</h2>
+            <div class="chart-box"><canvas id="strokePieChart"></canvas></div>
+          </div>
+          <div class="card heatmap-card">
+            <h2>Court coverage</h2>
+            <div class="heatmap-row">
+              <div class="heatmap-tile">
+                <span class="heatmap-label">Player 1</span>
+                <img id="heatmap0" alt="Player 1 court heatmap" />
+              </div>
+              <div class="heatmap-tile">
+                <span class="heatmap-label">Player 2</span>
+                <img id="heatmap1" alt="Player 2 court heatmap" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card weaknesses-card">
+          <h2>Weaknesses &amp; tips</h2>
+          <ul id="weaknessesList" class="bullet-list"></ul>
+          <ul id="tipsList" class="bullet-list"></ul>
+        </section>
+
+        <section class="card coaching-card">
+          <div class="coaching-header">
+            <h2>AI coaching report</h2>
+            <div class="coaching-actions">
+              <span id="coachingProviderBadge" class="provider-badge"></span>
+              <button id="regenerateCoachingBtn" class="btn btn-secondary">Regenerate</button>
+            </div>
+          </div>
+          <div id="coachingLoading" class="stage-label">Loading coaching report…</div>
+          <div id="coachingBody" class="coaching-body hidden">
+            <p id="coachingSummary" class="coaching-summary"></p>
+            <div class="coaching-columns">
+              <div>
+                <h3>Strengths</h3>
+                <ul id="coachingStrengths" class="bullet-list"></ul>
+              </div>
+              <div>
+                <h3>Training recommendations</h3>
+                <ul id="coachingRecommendations" class="bullet-list"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card shots-card">
+          <h2>Shot log</h2>
+          <div class="table-scroll">
+            <table class="shots-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Type</th>
+                  <th>Player</th>
+                  <th>Speed</th>
+                  <th>Angle</th>
+                  <th>Quality</th>
+                </tr>
+              </thead>
+              <tbody id="shotsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card replay-card">
+          <div class="replay-card-header">
+            <h2>Replay</h2>
+            <a id="openReplayLink" class="btn btn-secondary" href="#">Open interactive replay</a>
+          </div>
+          <video id="replayVideo" class="replay-video" controls></video>
+          <div class="replay-actions">
+            <button id="downloadVideoBtn" class="btn btn-secondary">Download annotated video</button>
+            <button id="downloadReplayBtn" class="btn btn-secondary">Download replay JSON</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="./results.ts"></script>
+</body>
+</html>

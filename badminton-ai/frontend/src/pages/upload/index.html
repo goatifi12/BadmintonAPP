@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload a match — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="../../components/app-nav/app-nav.css" />
+  <link rel="stylesheet" href="../../styles/app-shell.css" />
+  <link rel="stylesheet" href="./upload.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="app-shell">
+    <app-nav active="upload"></app-nav>
+
+    <main class="app-main app-main-narrow">
+      <section class="card upload-card">
+        <h1>Upload a match</h1>
+        <p class="upload-subtitle">MP4, MOV, or MKV. We'll process it and hand you back shot, rally, and movement analytics.</p>
+
+        <div id="formError" class="form-error" role="alert"></div>
+
+        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose a video file">
+          <input id="fileInput" type="file" accept="video/*" class="visually-hidden" />
+          <div id="dropzoneEmpty" class="dropzone-empty">
+            <p class="dropzone-title">Drag and drop your video here</p>
+            <p class="dropzone-hint">or click to browse</p>
+          </div>
+          <div id="dropzoneFile" class="dropzone-file hidden">
+            <p id="fileName" class="file-name"></p>
+            <p id="fileSize" class="file-size"></p>
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <label class="field-label" for="modeSelect">Match type</label>
+          <select id="modeSelect" class="field mode-select">
+            <option value="singles">Singles</option>
+            <option value="doubles">Doubles</option>
+          </select>
+        </div>
+
+        <button id="submitBtn" class="btn btn-primary btn-block" disabled>Upload and analyze</button>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./upload.ts"></script>
+</body>
+</html>

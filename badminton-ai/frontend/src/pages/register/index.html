@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create account — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="./register.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <main class="auth-shell">
+    <div class="auth-card card">
+      <a class="auth-brand" href="../../../index.html">
+        <span class="brand-mark">BA</span>
+        <span>Badminton AI</span>
+      </a>
+      <h1>Create your account</h1>
+      <p class="auth-subtitle">Start uploading matches and get AI coaching in minutes.</p>
+
+      <div id="formError" class="form-error" role="alert"></div>
+
+      <form id="registerForm" class="auth-form" novalidate>
+        <div>
+          <label class="field-label" for="displayName">Name</label>
+          <input class="field" id="displayName" name="displayName" type="text" autocomplete="name" required />
+        </div>
+        <div>
+          <label class="field-label" for="email">Email</label>
+          <input class="field" id="email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div>
+          <label class="field-label" for="password">Password</label>
+          <input class="field" id="password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+          <p class="field-hint">At least 8 characters.</p>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="submitBtn">Create account</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="../login/index.html">Sign in</a></p>
+    </div>
+  </main>
+  <script type="module" src="./register.ts"></script>
+</body>
+</html>

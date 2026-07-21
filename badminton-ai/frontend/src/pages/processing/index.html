@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Processing — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="../../components/app-nav/app-nav.css" />
+  <link rel="stylesheet" href="../../styles/app-shell.css" />
+  <link rel="stylesheet" href="./processing.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="app-shell">
+    <app-nav active="upload"></app-nav>
+
+    <main class="app-main app-main-narrow">
+      <section class="card processing-card">
+        <div id="loadingState">
+          <h1 id="statusHeading">Processing your match</h1>
+          <p id="stageLabel" class="stage-label stage-label-active">queued</p>
+
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <p id="progressPercent" class="progress-percent">0%</p>
+        </div>
+
+        <div id="errorState" class="hidden">
+          <h1>Something went wrong</h1>
+          <p id="errorMessage" class="stage-label"></p>
+          <a class="btn btn-secondary" href="../upload/index.html">Try another upload</a>
+        </div>
+
+        <div id="doneState" class="hidden">
+          <h1>Analysis complete</h1>
+          <p class="stage-label">Shot classification, rally analytics, and coaching are ready.</p>
+          <a id="viewResultsLink" class="btn btn-primary" href="#">View full results</a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./processing.ts"></script>
+</body>
+</html>

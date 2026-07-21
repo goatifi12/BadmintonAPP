@@ -1,0 +1,225 @@
+.notice-card {
+  padding: var(--space-5);
+  color: var(--color-text-muted);
+}
+
+.replay-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.replay-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.replay-title-row h1 {
+  font-size: var(--text-2xl);
+  font-weight: 900;
+}
+
+.replay-title-row a {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.frame-readout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.replay-main-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.video-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.video-wrap {
+  position: relative;
+  background: #000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.replay-video {
+  display: block;
+  width: 100%;
+  max-height: 32rem;
+  background: #000;
+}
+
+.playback-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.play-pause-btn {
+  min-width: 5.5rem;
+}
+
+.speed-select {
+  margin-left: auto;
+  max-width: 6rem;
+}
+
+.timeline-wrap {
+  position: relative;
+  padding-top: var(--space-3);
+}
+
+.timeline-range {
+  width: 100%;
+  accent-color: var(--color-primary);
+}
+
+.timeline-markers {
+  position: relative;
+  height: 0.6rem;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transform: translateX(-50%);
+  cursor: pointer;
+  border: 1px solid var(--color-surface);
+}
+
+.timeline-marker:hover {
+  transform: translateX(-50%) scale(1.4);
+}
+
+.active-shot-banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-primary), transparent 90%);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.court-card,
+.shots-card {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.court-card h2,
+.shots-card h2 {
+  font-size: var(--text-base);
+  font-weight: 800;
+}
+
+.court-svg {
+  width: 100%;
+  aspect-ratio: 61 / 134;
+  background: var(--color-court, #22a66f);
+  border-radius: var(--radius-md);
+}
+
+.court-surface {
+  fill: #22a66f;
+}
+
+.court-line {
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 0.4;
+}
+
+.shuttle-dot {
+  fill: #ffffff;
+  stroke: #1f2520;
+  stroke-width: 0.3;
+  transition: cx 0.1s linear, cy 0.1s linear;
+}
+
+.player-dot {
+  stroke: white;
+  stroke-width: 0.5;
+  transition: cx 0.1s linear, cy 0.1s linear;
+}
+
+.player-dot.team-0 {
+  fill: #ff7a59;
+}
+
+.player-dot.team-1 {
+  fill: #3860ff;
+}
+
+.replay-shots-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.replay-shot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--text-sm);
+  transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.replay-shot-row:hover {
+  border-color: var(--color-primary);
+}
+
+.replay-shot-row.active {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary), transparent 92%);
+}
+
+.replay-shot-type {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.replay-shot-meta {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 900px) {
+  .replay-main-grid {
+    grid-template-columns: 1fr;
+  }
+}

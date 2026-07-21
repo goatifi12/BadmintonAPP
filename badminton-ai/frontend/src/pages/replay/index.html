@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Replay — Badminton AI</title>
+  <link rel="stylesheet" href="../../styles/base.css" />
+  <link rel="stylesheet" href="../../components/app-nav/app-nav.css" />
+  <link rel="stylesheet" href="../../styles/app-shell.css" />
+  <link rel="stylesheet" href="./replay.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="app-shell">
+    <app-nav active="reports"></app-nav>
+
+    <main class="app-main">
+      <div id="loadingNotice" class="card notice-card">Loading replay…</div>
+      <div id="notDoneNotice" class="card notice-card hidden">
+        This analysis isn't finished yet. <a id="goToProcessingLink" href="#">View progress</a>
+      </div>
+
+      <div id="replayContent" class="replay-content hidden">
+        <div class="replay-title-row">
+          <div>
+            <h1 id="replayTitle">Replay</h1>
+            <a id="backToResultsLink" href="#">← Back to results</a>
+          </div>
+          <div class="frame-readout">
+            <span id="timeReadout">0:00 / 0:00</span>
+            <span id="frameReadout">frame 0</span>
+          </div>
+        </div>
+
+        <div class="replay-main-grid">
+          <div class="video-column">
+            <div class="video-wrap">
+              <video id="replayVideo" class="replay-video"></video>
+            </div>
+
+            <div class="playback-controls">
+              <button id="stepBackBtn" class="btn btn-secondary" title="Previous frame">⏮</button>
+              <button id="playPauseBtn" class="btn btn-primary play-pause-btn">Play</button>
+              <button id="stepForwardBtn" class="btn btn-secondary" title="Next frame">⏭</button>
+              <select id="speedSelect" class="field speed-select">
+                <option value="0.25">0.25×</option>
+                <option value="0.5">0.5×</option>
+                <option value="1" selected>1×</option>
+                <option value="1.5">1.5×</option>
+                <option value="2">2×</option>
+              </select>
+            </div>
+
+            <div class="timeline-wrap">
+              <input id="timelineRange" class="timeline-range" type="range" min="0" max="1000" value="0" />
+              <div id="timelineMarkers" class="timeline-markers"></div>
+            </div>
+
+            <div id="activeShotBanner" class="active-shot-banner hidden"></div>
+          </div>
+
+          <div class="side-column">
+            <div class="card court-card">
+              <h2>Tactical view</h2>
+              <svg id="courtSvg" class="court-svg" viewBox="0 0 61 134" preserveAspectRatio="xMidYMid meet">
+                <rect x="0" y="0" width="61" height="134" class="court-surface" />
+                <line x1="0" y1="67" x2="61" y2="67" class="court-line" />
+                <line x1="0" y1="13.5" x2="61" y2="13.5" class="court-line" />
+                <line x1="0" y1="120.5" x2="61" y2="120.5" class="court-line" />
+                <circle id="shuttleDot" class="shuttle-dot" r="1.6" cx="30.5" cy="67" style="display:none" />
+                <circle id="player0Dot" class="player-dot team-0" r="2.4" cx="20" cy="100" style="display:none" />
+                <circle id="player1Dot" class="player-dot team-1" r="2.4" cx="40" cy="34" style="display:none" />
+              </svg>
+            </div>
+
+            <div class="card shots-card">
+              <h2>Shot log</h2>
+              <div id="replayShotsList" class="replay-shots-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="./replay.ts"></script>
+</body>
+</html>

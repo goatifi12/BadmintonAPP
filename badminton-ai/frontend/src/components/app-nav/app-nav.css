@@ -1,0 +1,90 @@
+app-nav {
+  display: block;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-6);
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.app-nav-inner .brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 800;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.app-nav-inner .brand:hover {
+  text-decoration: none;
+}
+
+.app-nav-inner .brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white;
+  font-weight: 900;
+  font-size: var(--text-xs);
+}
+
+.app-nav-links {
+  display: flex;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.app-nav-link {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+}
+
+.app-nav-link:hover {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.app-nav-link.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.app-header-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.user-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .app-nav-inner {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .app-nav-links {
+    order: 3;
+    width: 100%;
+    gap: var(--space-3);
+  }
+}

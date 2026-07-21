@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Badminton AI — AI-powered match analysis</title>
+  <link rel="stylesheet" href="src/styles/base.css" />
+  <link rel="stylesheet" href="src/pages/landing.css" />
+</head>
+<body>
+  <div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:99999;background:#11151c;color:#fff;font-family:system-ui,-apple-system,sans-serif;align-items:center;justify-content:center;padding:2rem;text-align:center;">
+    <div style="max-width:34rem;">
+      <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 1rem;">This app can&rsquo;t run by opening the file directly</h1>
+      <p style="line-height:1.6;margin:0 0 1rem;color:#d1d5db;">Browsers block the scripts this app needs when a page is opened as a local file (your address bar shows <code>file://&hellip;</code>). Serve it from a local dev server instead:</p>
+      <pre style="background:#1f2937;padding:1rem;border-radius:0.5rem;text-align:left;overflow-x:auto;margin:0 0 1rem;">cd frontend
+npm install
+npm run dev</pre>
+      <p style="line-height:1.6;color:#d1d5db;">Then open <strong style="color:#fff;">http://localhost:5173</strong> in your browser &mdash; not this file.</p>
+    </div>
+  </div>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("fileProtocolWarning").style.display = "flex";
+    }
+  </script>
+
+  <div class="landing-bg" aria-hidden="true">
+    <div class="landing-blob landing-blob-1"></div>
+    <div class="landing-blob landing-blob-2"></div>
+    <div class="landing-blob landing-blob-3"></div>
+    <div class="landing-grid"></div>
+  </div>
+
+  <main class="landing">
+    <header class="landing-nav">
+      <div class="brand">
+        <span class="brand-mark">BA</span>
+        <span>Badminton AI</span>
+      </div>
+      <nav class="landing-nav-actions">
+        <a class="btn btn-secondary" href="src/pages/login/index.html">Sign in</a>
+        <a class="btn btn-primary" href="src/pages/register/index.html">Get started</a>
+      </nav>
+    </header>
+
+    <section class="landing-hero">
+      <div class="landing-hero-copy">
+        <span class="hero-eyebrow" data-animate>Local-first · No GPU required</span>
+        <h1 data-animate>Turn match video into professional coaching data.</h1>
+        <p data-animate>
+          Upload a badminton match and get shot classification, rally analytics, movement heatmaps, and
+          AI coaching — the same kind of insight commercial performance-analysis tools give elite teams.
+        </p>
+        <div class="landing-hero-actions" data-animate>
+          <a class="btn btn-primary btn-lg" href="src/pages/register/index.html">Create your account</a>
+          <a class="btn btn-secondary btn-lg" href="src/pages/login/index.html">I already have one</a>
+        </div>
+      </div>
+
+      <div class="landing-hero-visual" data-animate aria-hidden="true">
+        <svg viewBox="0 0 320 420" class="court-illustration">
+          <rect x="10" y="10" width="300" height="400" rx="18" class="court-bg" />
+          <rect x="30" y="30" width="260" height="360" rx="4" class="court-line" fill="none" />
+          <line x1="30" y1="210" x2="290" y2="210" class="court-line" />
+          <line x1="30" y1="110" x2="290" y2="110" class="court-line" />
+          <line x1="30" y1="310" x2="290" y2="310" class="court-line" />
+          <line x1="160" y1="30" x2="160" y2="390" class="court-line" />
+          <circle class="shuttle-orbit" cx="160" cy="70" r="7" />
+          <g class="player-marker player-marker-a">
+            <circle cx="110" cy="270" r="12" />
+          </g>
+          <g class="player-marker player-marker-b">
+            <circle cx="205" cy="150" r="12" />
+          </g>
+          <path class="trail-path" d="M110,270 Q160,150 205,150" />
+        </svg>
+        <div class="floating-chip floating-chip-1">Smash · 268 km/h</div>
+        <div class="floating-chip floating-chip-2">Confidence: High</div>
+      </div>
+    </section>
+
+    <section class="landing-features">
+      <div class="feature-card" data-animate>
+        <div class="feature-icon feature-icon-speed">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12h10M4 12l4-4M4 12l4 4M20 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Shot &amp; speed detection</h3>
+        <p>Smash, clear, drop, drive, lift, net &mdash; classified automatically with speed and quality scoring per shot.</p>
+      </div>
+      <div class="feature-card" data-animate>
+        <div class="feature-icon feature-icon-heatmap">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="2" fill="currentColor"/><circle cx="15" cy="15" r="2.5" fill="currentColor"/></svg>
+        </div>
+        <h3>Movement heatmaps</h3>
+        <p>See exactly where you and your opponent cover the court, rally after rally.</p>
+      </div>
+      <div class="feature-card" data-animate>
+        <div class="feature-icon feature-icon-coach">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 015 5v2a5 5 0 01-10 0V7a5 5 0 015-5zM4 21c0-4 3.5-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>AI coaching reports</h3>
+        <p>Strengths, weaknesses, and training recommendations generated from your own match data.</p>
+      </div>
+      <div class="feature-card" data-animate>
+        <div class="feature-icon feature-icon-replay">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3V9z" fill="currentColor"/></svg>
+        </div>
+        <h3>Interactive replay</h3>
+        <p>Scrub through the match with a live court minimap and click any shot to jump straight to it.</p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="src/pages/landing.ts"></script>
+</body>
+</html>

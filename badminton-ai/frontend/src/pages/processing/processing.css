@@ -1,0 +1,83 @@
+.processing-card {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.stage-label {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-transform: capitalize;
+}
+
+.progress-track {
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: relative;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transition: width 0.8s var(--ease-standard);
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: progressShimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes progressShimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.stage-label {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-transform: capitalize;
+}
+
+.stage-label-active {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.stage-label-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: -0.275rem;
+  border-radius: 999px;
+  background: var(--color-primary);
+  animation: stagePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes stagePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill::after,
+  .stage-label-active::before {
+    animation: none !important;
+  }
+}
+
+.progress-percent {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
