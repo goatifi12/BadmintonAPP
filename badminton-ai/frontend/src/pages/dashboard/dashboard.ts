@@ -1,11 +1,13 @@
 import "@/components/app-nav/app-nav";
 import { jobsApi } from "@/api/jobs";
 import { requireToken, verifySession } from "@/lib/auth-guard";
+import { initGlobalErrorHandler } from "@/lib/error-handler";
 import { renderJobCard } from "@/lib/job-card";
 import { animateOnEnter, countUpTo, showToast } from "@/lib/motion";
 import { initTheme } from "@/lib/theme";
 import { authStore } from "@/state/auth-store";
 
+initGlobalErrorHandler();
 initTheme();
 requireToken();
 

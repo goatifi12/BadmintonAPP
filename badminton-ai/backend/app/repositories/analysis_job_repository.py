@@ -19,9 +19,13 @@ class AnalysisJobRepository:
     async def get_by_id(self, job_id: str) -> AnalysisJob | None:
         return await self.session.get(AnalysisJob, job_id)
 
-    async def list_for_user(self, user_id: str, limit: int = 50) -> list[AnalysisJob]:
+    async def list_for_user(self, user_id: str, limit: int = 50, offset: int = 0) -> list[AnalysisJob]:
         result = await self.session.execute(
-            select(AnalysisJob).where(AnalysisJob.user_id == user_id).order_by(AnalysisJob.created_at.desc()).limit(limit)
+            select(AnalysisJob)
+            .where(AnalysisJob.user_id == user_id)
+            .order_by(AnalysisJob.created_at.desc())
+            .limit(limit)
+            .offset(offset)
         )
         return list(result.scalars().all())
 

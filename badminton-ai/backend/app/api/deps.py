@@ -22,6 +22,13 @@ _bearer_scheme = HTTPBearer(auto_error=True)
 DbSession = Annotated[AsyncSession, Depends(get_db_session)]
 
 
+def get_user_repository(session: DbSession) -> UserRepository:
+    return UserRepository(session)
+
+
+UserRepositoryDep = Annotated[UserRepository, Depends(get_user_repository)]
+
+
 def get_auth_service(session: DbSession) -> AuthService:
     return AuthService(UserRepository(session))
 

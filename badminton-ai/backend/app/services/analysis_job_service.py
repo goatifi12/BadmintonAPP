@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from typing import BinaryIO
+import magic
 
 from app.core.storage import StorageBackend
 from app.db.models.analysis_job import AnalysisJob
 from app.repositories.analysis_job_repository import AnalysisJobRepository
 
 ALLOWED_VIDEO_CONTENT_PREFIX = "video/"
+ALLOWED_VIDEO_MAGIC_TYPES = {"video/mp4", "video/quicktime", "video/x-msvideo", "video/x-matroska"}
 MAX_UPLOAD_BYTES = 2 * 1024 * 1024 * 1024  # 2GB, matches the previous app's limit
 
 
@@ -46,6 +48,16 @@ class AnalysisJobService:
     ) -> AnalysisJob:
         if not content_type or not content_type.startswith(ALLOWED_VIDEO_CONTENT_PREFIX):
             raise UnsupportedMediaTypeError("Upload a video file.")
+
+        # Validate actual file content using magic bytes
+        try:
+            initial_bytes = stream.read(2048)
+            stream.seek(0)
+            mime = magic.from_buffer(initial_bytes, mime=True)
+            if mime not in ALLOWED_VIDEO_MAGIC_TYPES:
+                raise UnsupportedMediaTypeError(f"File type {mime} is not supported. Please upload a valid video file.")
+        except Exception as e:
+            raise UnsupportedMediaTypeError("Could not validate file type. Please upload a valid video file.") from e
 
         # Reserve the row first so the storage path can be namespaced by job id,
         # matching how the CV pipeline (Phase 3) will look artifacts up by job id.

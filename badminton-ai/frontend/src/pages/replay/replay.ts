@@ -2,12 +2,14 @@ import "@/components/app-nav/app-nav";
 import { jobsApi } from "@/api/jobs";
 import { ApiError } from "@/api/client";
 import { requireToken, verifySession } from "@/lib/auth-guard";
+import { initGlobalErrorHandler } from "@/lib/error-handler";
 import { loadAuthedObjectUrl, trackObjectUrlsForCleanup } from "@/lib/authed-assets";
 import { animateOnEnter, showToast } from "@/lib/motion";
 import { initTheme } from "@/lib/theme";
 import { authStore } from "@/state/auth-store";
 import { COURT_HEIGHT_M, COURT_WIDTH_M, type ReplayData, type ReplayShotEvent } from "@/types/replay";
 
+initGlobalErrorHandler();
 initTheme();
 requireToken();
 trackObjectUrlsForCleanup();

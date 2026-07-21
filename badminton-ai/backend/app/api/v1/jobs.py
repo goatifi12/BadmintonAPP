@@ -4,6 +4,8 @@ import asyncio
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.api.deps import AnalysisJobServiceDep, CoachingReportRepositoryDep, CurrentUser, PlayerTrackRepositoryDep, ShotEventRepositoryDep, StorageDep
 from app.schemas.analysis_job import AnalysisJobRead
@@ -12,9 +14,11 @@ from app.services.analysis_job_service import JobAccessDeniedError, JobNotFoundE
 from app.services.coaching_engine import CoachingEngine
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("", response_model=AnalysisJobRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit("3/minute")
 async def create_job(
     current_user: CurrentUser,
     job_service: AnalysisJobServiceDep,
@@ -39,8 +43,13 @@ async def create_job(
 
 
 @router.get("", response_model=list[AnalysisJobRead])
-async def list_jobs(current_user: CurrentUser, job_service: AnalysisJobServiceDep) -> list[AnalysisJobRead]:
-    jobs = await job_service.list_jobs(user_id=current_user.id)
+async def list_jobs(
+    current_user: CurrentUser,
+    job_service: AnalysisJobServiceDep,
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+) -> list[AnalysisJobRead]:
+    jobs = await job_service.list_jobs(user_id=current_user.id, limit=limit, offset=offset)
     return [AnalysisJobRead.model_validate(job) for job in jobs]
 
 

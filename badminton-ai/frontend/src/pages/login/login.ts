@@ -1,8 +1,10 @@
 import { authApi } from "@/api/auth";
 import { ApiError } from "@/api/client";
+import { initGlobalErrorHandler } from "@/lib/error-handler";
 import { initTheme } from "@/lib/theme";
 import { authStore } from "@/state/auth-store";
 
+initGlobalErrorHandler();
 initTheme();
 
 if (authStore.isAuthenticated()) {

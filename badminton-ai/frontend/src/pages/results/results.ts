@@ -3,12 +3,14 @@ import Chart from "chart.js/auto";
 import { jobsApi } from "@/api/jobs";
 import { ApiError } from "@/api/client";
 import { requireToken, verifySession } from "@/lib/auth-guard";
+import { initGlobalErrorHandler } from "@/lib/error-handler";
 import { downloadAuthedFile, loadAuthedObjectUrl, trackObjectUrlsForCleanup } from "@/lib/authed-assets";
 import { animateOnEnter, countUpTo, showToast } from "@/lib/motion";
 import { initTheme } from "@/lib/theme";
 import { authStore } from "@/state/auth-store";
 import type { AnalysisJobRead } from "@/types/jobs";
 
+initGlobalErrorHandler();
 initTheme();
 requireToken();
 trackObjectUrlsForCleanup();

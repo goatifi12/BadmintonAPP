@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./badminton_dev.db"
 
     # --- Auth ---
-    jwt_secret_key: str = "change-me-in-production"
+    jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24  # 24h
     refresh_token_expire_minutes: int = 60 * 24 * 14  # 14d

@@ -1,8 +1,10 @@
 import "@/components/app-nav/app-nav";
 import { requireToken, signOutAndRedirect, verifySession } from "@/lib/auth-guard";
+import { initGlobalErrorHandler } from "@/lib/error-handler";
 import { animateOnEnter, showToast } from "@/lib/motion";
 import { getThemePreference, initTheme, setThemePreference, type ThemePreference } from "@/lib/theme";
 
+initGlobalErrorHandler();
 initTheme();
 requireToken();
 

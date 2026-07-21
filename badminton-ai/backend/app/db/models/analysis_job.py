@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from sqlalchemy import JSON, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -17,14 +17,17 @@ class JobStatus(StrEnum):
 
 class AnalysisJob(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "analysis_jobs"
+    __table_args__ = (
+        Index("ix_analysis_jobs_user_status_created", "user_id", "status", "created_at"),
+        Index("ix_analysis_jobs_status_created", "status", "created_at"),
+    )
 
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
-
     original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_path: Mapped[str] = mapped_column(String(500), nullable=False)
     mode: Mapped[str] = mapped_column(String(20), default="singles", nullable=False)
 
-    status: Mapped[str] = mapped_column(String(20), default=JobStatus.QUEUED.value, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default=JobStatus.QUEUED.value, nullable=False, index=True)
     stage: Mapped[str] = mapped_column(String(50), default="queued", nullable=False)
     progress: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
