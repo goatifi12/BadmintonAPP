@@ -1,6 +1,7 @@
 import type { ApiErrorBody } from "@/types/api";
+import { API_TIMEOUT_MS, API_UPLOAD_TIMEOUT_MS, getApiBaseUrl } from "@/api/config";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
+const API_BASE_URL = getApiBaseUrl();
 
 export class ApiError extends Error {
   constructor(
@@ -24,11 +25,15 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers.Authorization = `Bearer ${options.token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: options.method ?? "GET",
-    headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-  });
+  const response = await fetchWithTimeout(
+    `${API_BASE_URL}${path}`,
+    {
+      method: options.method ?? "GET",
+      headers,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    },
+    API_TIMEOUT_MS,
+  );
 
   if (!response.ok) {
     let message = `Request failed with status ${response.status}`;
@@ -58,7 +63,7 @@ export const apiClient = {
     const headers: Record<string, string> = {};
     if (token) headers.Authorization = `Bearer ${token}`;
 
-    const response = await fetch(`${API_BASE_URL}${path}`, { method: "POST", headers, body: formData });
+    const response = await fetchWithTimeout(`${API_BASE_URL}${path}`, { method: "POST", headers, body: formData }, API_UPLOAD_TIMEOUT_MS);
     if (!response.ok) {
       let message = `Request failed with status ${response.status}`;
       try {
@@ -72,3 +77,18 @@ export const apiClient = {
     return (await response.json()) as T;
   },
 };
+
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new ApiError("The request timed out. Try a smaller video or retry in a moment.", 408);
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}

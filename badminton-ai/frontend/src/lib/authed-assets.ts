@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
+import { API_TIMEOUT_MS, getApiBaseUrl } from "@/api/config";
+
+const API_BASE_URL = getApiBaseUrl();
 
 const createdObjectUrls = new Set<string>();
 
@@ -8,7 +10,12 @@ const createdObjectUrls = new Set<string>();
  * `trackObjectUrlsForCleanup`).
  */
 export async function loadAuthedObjectUrl(path: string, token: string): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${token}` } });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: controller.signal,
+  }).finally(() => window.clearTimeout(timeout));
   if (!response.ok) {
     throw new Error(`Failed to load ${path}: ${response.status}`);
   }

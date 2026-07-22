@@ -10,10 +10,8 @@ from app.core.config import get_settings
 
 
 def _to_sync_url(async_url: str) -> str:
-    """Celery workers are plain sync processes, so they use the sync driver
-    variant of the same DATABASE_URL instead of the asyncio one FastAPI uses.
-    """
-    return async_url.replace("+asyncpg", "").replace("+aiosqlite", "")
+    """The inline analysis runner uses a sync SQLAlchemy session."""
+    return async_url.replace("+aiosqlite", "")
 
 
 settings = get_settings()

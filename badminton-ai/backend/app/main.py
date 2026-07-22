@@ -8,11 +8,14 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from sqlalchemy import text
 import structlog
 
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
+from app.db.base import Base
+import app.db.models  # noqa: F401 - import models before create_all
 from app.db.session import engine
 
 settings = get_settings()
@@ -24,6 +27,9 @@ limiter = Limiter(key_func=get_remote_address)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Application starting up")
+    if settings.auto_create_tables:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
     yield
     logger.info("Application shutting down")
     await engine.dispose()
@@ -35,7 +41,6 @@ def create_app() -> FastAPI:
         title=settings.app_name,
         version="0.1.0",
         lifespan=lifespan,
-        timeout=300  # 5 minute timeout for all requests
     )
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -88,11 +93,11 @@ def create_app() -> FastAPI:
 
     @app.get("/health", tags=["health"])
     @limiter.limit("60/minute")
-    async def health() -> dict[str, str]:
+    async def health(request: Request) -> dict[str, str]:
         try:
             # Check database connectivity
             async with engine.begin() as conn:
-                await conn.execute("SELECT 1")
+                await conn.execute(text("SELECT 1"))
             return {"status": "ok", "service": settings.app_name, "database": "connected"}
         except Exception as e:
             logger.error("health_check_failed", error=str(e))

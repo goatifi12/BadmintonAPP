@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -15,7 +15,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
-async def register(payload: RegisterRequest, auth_service: AuthServiceDep) -> AuthResponse:
+async def register(request: Request, payload: RegisterRequest, auth_service: AuthServiceDep) -> AuthResponse:
     try:
         user, tokens = await auth_service.register(email=payload.email, password=payload.password, display_name=payload.display_name)
     except EmailAlreadyRegisteredError as exc:
@@ -25,7 +25,7 @@ async def register(payload: RegisterRequest, auth_service: AuthServiceDep) -> Au
 
 @router.post("/login", response_model=AuthResponse)
 @limiter.limit("10/minute")
-async def login(payload: LoginRequest, auth_service: AuthServiceDep) -> AuthResponse:
+async def login(request: Request, payload: LoginRequest, auth_service: AuthServiceDep) -> AuthResponse:
     try:
         user, tokens = await auth_service.login(email=payload.email, password=payload.password)
     except (InvalidCredentialsError, InactiveUserError) as exc:

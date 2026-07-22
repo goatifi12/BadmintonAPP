@@ -10,7 +10,6 @@ from app.db.models.shot_event import ShotEvent
 from app.db.session_sync import sync_session_scope
 from app.pipeline.orchestrator import CVPipeline, PipelineConfig
 from app.services.coaching_engine import CoachingEngine
-from app.workers.celery_app import celery_app
 
 # Stage -> progress floor. "tracking" spans a wide range because it is the
 # most expensive stage (one pass over every frame); its callback interpolates
@@ -30,8 +29,7 @@ PROGRESS_FLOORS: dict[str, int] = {
 _STAGE_ORDER = list(PROGRESS_FLOORS)
 
 
-@celery_app.task(name="analysis.process_job", bind=True)
-def process_analysis_job(self, job_id: str) -> dict[str, Any]:
+def process_analysis_job(job_id: str) -> dict[str, Any]:
     with sync_session_scope() as session:
         job = session.get(AnalysisJob, job_id)
         if job is None:

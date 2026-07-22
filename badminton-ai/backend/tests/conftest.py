@@ -21,16 +21,14 @@ from app.main import create_app
 
 @pytest_asyncio.fixture
 async def db_session(tmp_path: Path) -> AsyncGenerator[AsyncSession, None]:
-    # Use an on-disk (not :memory:) SQLite file so the Celery task's *sync*
-    # session — patched below to point at the same file — reads/writes the
-    # same data as this async session. Celery's eager mode runs the task
-    # in-process during the test, which is what makes this necessary.
+    # Use an on-disk (not :memory:) SQLite file so the inline analysis runner's
+    # sync session reads/writes the same data as this async session.
     db_path = tmp_path / "test.db"
     engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}", future=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Point the worker's sync engine at the same file for the duration of the test.
+    # Point the analysis runner's sync engine at the same file for the test.
     original_engine = session_sync_module.sync_engine
     original_session_local = session_sync_module.SyncSessionLocal
     sync_engine = create_engine(f"sqlite:///{db_path}", future=True)
@@ -60,11 +58,9 @@ async def client(db_session: AsyncSession, tmp_path: Path) -> AsyncGenerator[Asy
     app.dependency_overrides[get_db_session] = override_get_db_session
     app.dependency_overrides[get_storage] = override_get_storage
 
-    # The Celery task runs outside FastAPI's dependency injection (it's a
-    # plain sync function invoked by the worker), so it resolves storage via
-    # the module-level `get_storage_backend` rather than the `get_storage`
-    # dependency above. Patch that reference too so pipeline outputs land in
-    # the same tmp directory the API reads them back from.
+    # The analysis runner runs outside FastAPI's dependency injection, so it
+    # resolves storage via the module-level `get_storage_backend`. Patch that
+    # reference too so pipeline outputs land where the API reads them back.
     original_get_storage_backend = tasks_module.get_storage_backend
     tasks_module.get_storage_backend = override_get_storage
 

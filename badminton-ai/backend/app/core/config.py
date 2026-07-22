@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,10 +16,11 @@ class Settings(BaseSettings):
     environment: str = "development"
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    auto_create_tables: bool = True
 
     # --- Database ---
-    # Async URL used by the app (asyncpg). Example:
-    # postgresql+asyncpg://badminton:badminton@localhost:5432/badminton
+    # SQLite keeps the PythonAnywhere Free deployment independent from
+    # paid/card-backed database providers.
     database_url: str = "sqlite+aiosqlite:///./badminton_dev.db"
 
     # --- Auth ---
@@ -28,18 +30,11 @@ class Settings(BaseSettings):
     refresh_token_expire_minutes: int = 60 * 24 * 14  # 14d
 
     # --- Storage ---
-    storage_backend: str = "local"  # "local" | "s3"
     local_storage_dir: str = "./data/uploads"
-    s3_bucket: str | None = None
-    s3_region: str | None = None
 
     # --- Jobs ---
-    redis_url: str = "redis://localhost:6379/0"
-    celery_task_always_eager: bool = True  # runs tasks inline until a worker/broker is wired up
-
-    # --- Third-party CV providers ---
-    roboflow_api_key: str | None = None
-    roboflow_api_url: str = "https://serverless.roboflow.com"
+    process_jobs_inline: bool = True
+    max_upload_bytes: int = 100 * 1024 * 1024
 
     # --- Coaching LLM (OpenRouter - free-tier friendly, OpenAI-compatible REST API) ---
     openrouter_api_key: str | None = None
@@ -52,6 +47,16 @@ class Settings(BaseSettings):
     openrouter_model: str = "openrouter/free"
     openrouter_site_url: str = "https://badminton-ai.local"
     openrouter_app_name: str = "Badminton AI"
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, value: str | list[str]) -> list[str]:
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped.startswith("["):
+                return value
+            return [origin.strip() for origin in stripped.split(",") if origin.strip()]
+        return value
 
 
 @lru_cache

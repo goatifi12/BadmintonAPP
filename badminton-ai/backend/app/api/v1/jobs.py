@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile, status
 from fastapi.responses import FileResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -20,6 +20,7 @@ limiter = Limiter(key_func=get_remote_address)
 @router.post("", response_model=AnalysisJobRead, status_code=status.HTTP_201_CREATED)
 @limiter.limit("3/minute")
 async def create_job(
+    request: Request,
     current_user: CurrentUser,
     job_service: AnalysisJobServiceDep,
     video: UploadFile = File(...),
