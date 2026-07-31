@@ -1,6 +1,6 @@
 # PythonAnywhere Free Deployment
 
-This backend is configured for PythonAnywhere Free without a credit card.
+This backend is configured for PythonAnywhere Free without a credit card. The frontend is now pure HTML/CSS/JavaScript with no build step.
 
 ## What Runs In Production
 
@@ -11,6 +11,7 @@ This backend is configured for PythonAnywhere Free without a credit card.
 - Job processing: inline during upload requests
 - Background workers: none
 - External paid services: none
+- Frontend: Pure HTML/CSS/JavaScript static files (deployed separately to Vercel or similar)
 
 PythonAnywhere Free has CPU, disk, and request-time limits. Keep uploaded clips short and set a conservative `MAX_UPLOAD_BYTES`.
 
@@ -19,7 +20,7 @@ PythonAnywhere Free has CPU, disk, and request-time limits. Keep uploaded clips 
 From a PythonAnywhere Bash console:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/BadmintonAPP.git
+git clone https://github.com/goatifi12/BadmintonAPP
 cd ~/BadmintonAPP/badminton-ai/backend
 ```
 
@@ -31,6 +32,30 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+**If you get a disk quota exceeded error:**
+
+The PythonAnywhere free tier has limited disk space. If installation fails, clean up and try again:
+
+```bash
+# Delete the failed installation
+rm -rf .venv
+
+# Clean pip cache
+pip cache purge
+
+# Recreate virtualenv with smaller packages
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+The `requirements.txt` has been optimized for PythonAnywhere's disk limits by:
+- Using `uvicorn` instead of `uvicorn[standard]` (removes extra dependencies)
+- Removing test dependencies (pytest, httpx)
+- Using older, smaller versions of opencv and numpy
+- Removing duplicate bcrypt dependency
 
 ## 3. Configure Environment Variables
 

@@ -1,10 +1,10 @@
 # Badminton AI
 
-Badminton AI is a Vite frontend plus FastAPI backend for match-video analysis, local SQLite persistence, local file storage, and optional AI coaching.
+Badminton AI is a pure HTML/CSS/JavaScript frontend plus FastAPI backend for match-video analysis, local SQLite persistence, local file storage, and optional AI coaching.
 
 This repo is configured for a completely free deployment stack with no credit card:
 
-- Frontend: Vercel Free
+- Frontend: Vercel Free (static files)
 - Backend: PythonAnywhere Free
 - Database: SQLite file on PythonAnywhere
 - Storage: local files on PythonAnywhere
@@ -28,24 +28,35 @@ The backend runs at `http://localhost:8000`. Health check: `GET /health`.
 
 ### Frontend
 
+The frontend is now pure HTML/CSS/JavaScript with no build step. To run it locally, you can use any static file server:
+
 ```bash
 cd frontend
-npm install
-cp .env.example .env
-npm run dev
+# Using Python 3
+python -m http.server 8000 --directory src
+
+# Or using Node.js http-server (if you have it installed)
+npx http-server src -p 8000
 ```
 
-The frontend runs at `http://localhost:5173` and uses `VITE_API_BASE_URL` for API calls.
+The frontend will run at `http://localhost:8000`. You can set the API base URL by adding a script tag before your page scripts:
+
+```html
+<script>
+  window.VITE_API_BASE_URL = "http://localhost:8000/api/v1";
+</script>
+```
 
 ## Deployment
 
 See [backend/PYTHONANYWHERE_DEPLOYMENT.md](backend/PYTHONANYWHERE_DEPLOYMENT.md) for the backend guide.
 
-For Vercel, deploy from `frontend/` with:
+For Vercel, deploy from `frontend/src/` as a static site:
 
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variable: `VITE_API_BASE_URL=https://your-pythonanywhere-username.pythonanywhere.com/api/v1`
+- Framework preset: Other
+- Build command: (none - static files)
+- Output directory: `src`
+- Environment variable: You may need to configure the API base URL in your HTML files or via a configuration script
 
 ## Free-Service Audit
 
