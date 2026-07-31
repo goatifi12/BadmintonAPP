@@ -5,11 +5,13 @@ Badminton AI is a pure HTML/CSS/JavaScript frontend plus FastAPI backend for mat
 This repo is configured for a completely free deployment stack with no credit card:
 
 - Frontend: Vercel Free (static files)
-- Backend: PythonAnywhere Free
-- Database: SQLite file on PythonAnywhere
-- Storage: local files on PythonAnywhere
+- Backend: Render Free
+- Database: SQLite (ephemeral on Render Free)
+- Storage: ephemeral disk on Render Free
 - Background jobs: none; analysis runs inline during the upload request
 - Optional coaching: deterministic local fallback by default, or OpenRouter free models if you add a free key
+
+**Note:** Render Free tier uses ephemeral storage - files and database changes are lost when the service restarts. For production use, consider upgrading to Render paid tier or using external database/storage services.
 
 ## Local Development
 
@@ -49,7 +51,7 @@ The frontend will run at `http://localhost:8000`. You can set the API base URL b
 
 ## Deployment
 
-See [backend/PYTHONANYWHERE_DEPLOYMENT.md](backend/PYTHONANYWHERE_DEPLOYMENT.md) for the backend guide.
+See [backend/RENDER_DEPLOYMENT.md](backend/RENDER_DEPLOYMENT.md) for the backend guide.
 
 For Vercel, deploy from `frontend/src/` as a static site:
 

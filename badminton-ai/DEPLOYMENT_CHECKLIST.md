@@ -1,43 +1,43 @@
-# Deployment Checklist: Vercel Frontend + PythonAnywhere Backend
+# Deployment Checklist: Vercel Frontend + Render Backend
 
-This checklist ensures your Badminton AI application works correctly when deployed to Vercel (frontend) and PythonAnywhere (backend).
+This checklist ensures your Badminton AI application works correctly when deployed to Vercel (frontend) and Render (backend).
 
 ## Pre-Deployment Checklist
 
-### Backend (PythonAnywhere)
+### Backend (Render)
 
 - [ ] **Update CORS Configuration**
   - Edit `backend/app/core/config.py`
   - Set `cors_origins` to include your Vercel domain: `["https://your-app.vercel.app"]`
   - Example: `cors_origins: list[str] = ["https://your-app.vercel.app", "http://localhost:5173"]`
 
-- [ ] **Configure Environment Variables**
-  - Set `CORS_ORIGINS=https://your-app.vercel.app` in PythonAnywhere
+- [ ] **Configure Environment Variables in Render**
+  - Set `CORS_ORIGINS=https://your-app.vercel.app`
   - Set `ENVIRONMENT=production`
   - Set `JWT_SECRET_KEY` to a secure random string
-  - Set `DATABASE_URL` to your SQLite path
-  - Set `LOCAL_STORAGE_DIR` to your upload directory path
+  - Set `DATABASE_URL=sqlite+aiosqlite:///./badminton.db`
+  - Set `LOCAL_STORAGE_DIR=./data/uploads`
   - Set `PROCESS_JOBS_INLINE=true`
   - Set `MAX_UPLOAD_BYTES` appropriately (e.g., `104857600` for 100MB)
   - Set `AUTO_CREATE_TABLES=true` for first deployment
   - Optional: Set `OPENROUTER_API_KEY` for AI coaching features
 
 - [ ] **Deploy Backend**
-  - Follow `backend/PYTHONANYWHERE_DEPLOYMENT.md`
-  - Test backend health: `https://your-username.pythonanywhere.com/health`
+  - Follow `backend/RENDER_DEPLOYMENT.md`
+  - Test backend health: `https://your-backend.onrender.com/health`
   - Note your backend URL for frontend configuration
 
 ### Frontend (Vercel)
 
 - [ ] **Update API Configuration**
   - Edit `frontend/src/config.js`
-  - Replace `https://your-username.pythonanywhere.com/api/v1` with your actual backend URL
+  - Replace `https://your-backend.onrender.com/api/v1` with your actual backend URL
   - The script should look like:
     ```javascript
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       apiBaseUrl = 'http://localhost:8000/api/v1';
     } else {
-      apiBaseUrl = 'https://your-username.pythonanywhere.com/api/v1';
+      apiBaseUrl = 'https://your-backend.onrender.com/api/v1';
     }
     ```
 
@@ -133,7 +133,7 @@ This checklist ensures your Badminton AI application works correctly when deploy
 **CORS Errors**
 - Symptom: Network errors in browser console, requests blocked
 - Solution: Verify `CORS_ORIGINS` in backend includes your Vercel domain
-- Check: Backend logs should show CORS configuration
+- Check: Render logs should show CORS configuration
 
 **API Connection Errors**
 - Symptom: "Could not reach the server" messages
@@ -148,7 +148,12 @@ This checklist ensures your Badminton AI application works correctly when deploy
 **File Upload Failures**
 - Symptom: Upload fails with timeout or error
 - Solution: Verify MAX_UPLOAD_BYTES is sufficient
-- Check: PythonAnywhere disk space limits
+- Check: Render resource limits (512MB RAM on free tier)
+
+**Render Cold Start**
+- Symptom: First request takes 30-60 seconds
+- Solution: Normal on Render Free tier - service spins down after inactivity
+- Consider upgrading to paid tier for consistent performance
 
 **Chart.js Not Loading**
 - Symptom: Charts don't render on results page
@@ -157,12 +162,15 @@ This checklist ensures your Badminton AI application works correctly when deploy
 
 ## Performance Considerations
 
-### PythonAnywhere Free Tier Limits
+### Render Free Tier Limits
 
-- CPU time limits: Keep video processing times reasonable
-- Disk space: Monitor upload directory size
-- Request time: Large videos may timeout
-- Solution: Set conservative MAX_UPLOAD_BYTES (e.g., 50-100MB)
+- **Ephemeral Storage:** Files and database are lost on service restart
+- **Cold Starts:** Service spins down after 15 minutes inactivity (30-60s cold start)
+- **Resource Limits:** 512MB RAM, 0.1 CPU
+- **Bandwidth:** 10GB per month
+- **Video Processing:** May exceed RAM limits for large videos
+- **Solution:** Set conservative MAX_UPLOAD_BYTES (e.g., 50-100MB)
+- **Recommendation:** Upgrade to paid tier ($7/month) for production use
 
 ### Vercel Limits
 
